@@ -7,19 +7,13 @@ class Login extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('Login Page', style: TextStyle(fontSize: 24)),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Implement login functionality here
-              },
-              child: const Text('Login'),
-            ),
+            ElevatedButton(onPressed: () {}, child: const Text('Login')),
           ],
         ),
       ),

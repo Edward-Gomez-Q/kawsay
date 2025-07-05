@@ -1,6 +1,7 @@
 class AppRoutes {
   //Comunes
-  static const String splash = '/';
+  static const String welcome = '/';
+  static const String splash = '/splash';
   static const String login = '/login';
 
   //Paciente

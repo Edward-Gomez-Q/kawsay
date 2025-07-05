@@ -6,13 +6,14 @@ import 'package:project_3_kawsay/config/routes/app_routes.dart';
 import 'package:project_3_kawsay/presentation/common/error/error.dart';
 import 'package:project_3_kawsay/presentation/common/login/login.dart';
 import 'package:project_3_kawsay/presentation/common/splash/splash.dart';
+import 'package:project_3_kawsay/presentation/common/welcome/welcome.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
   final routerNotifier = ref.read(routerNotifierProvider.notifier);
   return GoRouter(
     navigatorKey: routerNotifier.navigatorKey,
-    initialLocation: AppRoutes.splash,
+    initialLocation: AppRoutes.welcome,
     refreshListenable: routerNotifier,
     redirect: (context, state) {
       final isAuthenticated = authState.isAuthenticated;
@@ -22,13 +23,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         return AppRoutes.splash;
       }
 
-      // Rutas públicas
-      final publicRoutes = [AppRoutes.login, AppRoutes.splash];
+      final publicRoutes = [
+        AppRoutes.login,
+        AppRoutes.splash,
+        AppRoutes.welcome,
+      ];
 
       final isPublicRoute = publicRoutes.contains(state.matchedLocation);
 
       if (!isAuthenticated && !isPublicRoute) {
-        return AppRoutes.login;
+        return AppRoutes.welcome;
       }
 
       if (isAuthenticated &&
@@ -42,6 +46,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      GoRoute(
+        path: AppRoutes.welcome,
+        builder: (context, state) => const Welcome(),
+      ),
       GoRoute(
         path: AppRoutes.splash,
         builder: (context, state) => const Splash(),

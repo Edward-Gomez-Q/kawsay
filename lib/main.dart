@@ -5,7 +5,7 @@ import 'package:project_3_kawsay/config/routes/app_router.dart';
 import 'package:project_3_kawsay/presentation/themes/app_theme.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(ProviderScope(child: const MainApp()));
 }
 
 class MainApp extends ConsumerWidget {
