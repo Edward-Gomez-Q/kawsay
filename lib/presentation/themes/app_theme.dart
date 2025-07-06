@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_3_kawsay/presentation/themes/button_styles.dart';
 import 'package:project_3_kawsay/presentation/themes/icon_styles.dart';
 import 'colors.dart';
 import 'text_styles.dart';
@@ -40,6 +41,15 @@ class AppTheme {
       size: AppIconStyles.small,
     ),
     cardColor: AppColors.lightCardBackground,
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: AppButtonStyles.outlined(isDark: false),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: AppButtonStyles.elevated(isDark: false),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: AppButtonStyles.text(isDark: false),
+    ),
   );
 
   static ThemeData get dark => ThemeData(
@@ -78,5 +88,14 @@ class AppTheme {
       size: AppIconStyles.small,
     ),
     cardColor: AppColors.darkCardBackground,
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: AppButtonStyles.outlined(isDark: true),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: AppButtonStyles.elevated(isDark: true),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: AppButtonStyles.text(isDark: true),
+    ),
   );
 }
