@@ -13,6 +13,9 @@ class NavigationService {
       ref.read(routerNotifierProvider.notifier);
 
   void goToLogin() => router.go(AppRoutes.login);
+  void goToSignUp() => router.go(AppRoutes.signUp);
+  void goToWelcome() => router.go(AppRoutes.welcome);
+  void goToSplash() => router.go(AppRoutes.splash);
 }
 
 final navigationServiceProvider = Provider<NavigationService>(

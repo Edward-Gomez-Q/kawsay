@@ -55,7 +55,9 @@ class Welcome extends ConsumerWidget {
                 children: [
                   AppButton(
                     text: "Crear Cuenta",
-                    onPressed: () {},
+                    onPressed: () {
+                      navigation.goToSignUp();
+                    },
                     type: ButtonType.elevated,
                     size: ButtonSize.extraLarge,
                   ),

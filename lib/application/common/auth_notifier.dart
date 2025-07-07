@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_3_kawsay/model/common/auth_model.dart';
+import 'package:project_3_kawsay/state/common/auth_state.dart';
 import 'package:project_3_kawsay/model/common/person_model.dart';
 import 'package:project_3_kawsay/model/common/user_model.dart';
 

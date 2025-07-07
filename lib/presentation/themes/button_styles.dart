@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_3_kawsay/model/common/button_colors.dart';
+import 'package:project_3_kawsay/state/common/button_colors_state.dart';
 import 'package:project_3_kawsay/presentation/themes/colors.dart';
 import 'package:project_3_kawsay/presentation/themes/text_styles.dart';
 
