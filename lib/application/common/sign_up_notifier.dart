@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_3_kawsay/data/supabase/common/auth_user_repository_sp.dart';
 import 'package:project_3_kawsay/data/supabase/common/doctor_repository_sp.dart';
 import 'package:project_3_kawsay/data/supabase/common/person_repository_sp.dart';
+import 'package:project_3_kawsay/data/supabase/common/role_user_reposiotry_sp.dart';
 import 'package:project_3_kawsay/model/common/person_model.dart';
 import 'package:project_3_kawsay/model/common/user_model.dart';
 import 'package:project_3_kawsay/model/doctor/doctor_model.dart';
@@ -13,6 +14,7 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
   final PersonRepositorySp _personRepository = PersonRepositorySp();
   final AuthUserRepositorySp _authUserRepository = AuthUserRepositorySp();
   final DoctorRepositorySp _doctorRepository = DoctorRepositorySp();
+  final RoleUserReposiotrySp _roleUserRepository = RoleUserReposiotrySp();
   SignUpNotifier() : super(SignUpState());
   void setUserType(UserType userType) {
     state = state.copyWith(
@@ -164,6 +166,17 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
     // Si es doctor, crear datos médicos
     if (data.userType == UserType.doctor && data.medicalData != null) {
       await _doctorRepository.createDoctor(data.medicalData!, person.id);
+      // Asignar rol de doctor al usuario
+      await _roleUserRepository.createRoleUser(
+        1, // ID del rol de doctor
+        user.id,
+      );
+    } else {
+      // Asignar rol de paciente al usuario
+      await _roleUserRepository.createRoleUser(
+        2, // ID del rol de paciente
+        user.id,
+      );
     }
 
     // Actualizar el estado con el usuario creado

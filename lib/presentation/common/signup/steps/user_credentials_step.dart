@@ -155,6 +155,12 @@ class UserCredentialsStep extends ConsumerWidget {
                       ),
                     );
                   } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Cuenta creada exitosamente'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
                     navigation.goToLogin();
                   }
                 }
