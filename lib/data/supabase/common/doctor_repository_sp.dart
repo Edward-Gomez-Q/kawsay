@@ -25,4 +25,17 @@ class DoctorRepositorySp {
       throw Exception('Error al crear doctor: $e');
     }
   }
+
+  Future<DoctorModel> getDoctorByPersonId(int personId) async {
+    try {
+      final response = await _client
+          .from(_tableName)
+          .select()
+          .eq('person_id', personId)
+          .single();
+      return DoctorModel.fromMap(response);
+    } catch (e) {
+      throw Exception('Error al obtener doctor por ID de persona: $e');
+    }
+  }
 }

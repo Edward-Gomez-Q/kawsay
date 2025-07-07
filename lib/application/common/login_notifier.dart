@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_3_kawsay/data/supabase/common/auth_user_repository_sp.dart';
+import 'package:project_3_kawsay/data/supabase/common/doctor_repository_sp.dart';
+import 'package:project_3_kawsay/data/supabase/common/person_repository_sp.dart';
 import 'package:project_3_kawsay/data/supabase/common/role_user_reposiotry_sp.dart';
 import 'package:project_3_kawsay/state/common/login_state.dart';
 
 class LoginNotifier extends StateNotifier<LoginState> {
   final AuthUserRepositorySp _authUserRepository = AuthUserRepositorySp();
   final RoleUserReposiotrySp _roleUserRepository = RoleUserReposiotrySp();
+  final DoctorRepositorySp _doctorRepository = DoctorRepositorySp();
+  final PersonRepositorySp _personRepository = PersonRepositorySp();
   LoginNotifier() : super(LoginState.empty());
 
   void setEmail(String email) {
@@ -33,16 +37,28 @@ class LoginNotifier extends StateNotifier<LoginState> {
         state.emailController.text,
         state.passwordController.text,
       );
-      print('User logged in: ${user?.email}');
       if (user != null) {
-        //Obtener el rol del usuario
         final role = await _roleUserRepository.getRoleByUserId(user.id);
-        print('User role: $role');
         if (role != null) {
-          // Aquí puedes manejar el rol del usuario, por ejemplo, guardarlo en el estado
-          state = state.copyWith(role: role, userId: user.id, error: null);
-          //Imprimir el rol y el ID del usuario
-          print('User role: ${state.role}, User ID: ${state.userId}');
+          final person = await _personRepository.getPersonById(user.personId);
+          if (person == null) {
+            state = state.copyWith(error: 'Person not found for user');
+            return;
+          }
+          state = state.copyWith(doctor: null);
+          if (role == 1) {
+            final doctor = await _doctorRepository.getDoctorByPersonId(
+              person.id,
+            );
+            state = state.copyWith(doctor: doctor);
+          }
+
+          state = state.copyWith(
+            role: role,
+            userId: user.id,
+            error: null,
+            person: person,
+          );
         } else {
           state = state.copyWith(error: 'User role not found');
         }

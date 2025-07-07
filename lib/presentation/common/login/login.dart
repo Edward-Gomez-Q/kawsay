@@ -193,22 +193,20 @@ class Login extends ConsumerWidget {
                                             final updatedLoginState = ref.read(
                                               loginProvider,
                                             );
-                                            //Validar que no haya errores y que role y userId no sean nulos
                                             if (updatedLoginState.error ==
                                                 null) {
-                                              // Actualizar el estado de autenticación
                                               ref
                                                   .watch(authProvider.notifier)
                                                   .login(
-                                                    updatedLoginState
-                                                        .userId!, // no funciona
+                                                    updatedLoginState.userId!,
                                                     updatedLoginState.role!,
+                                                    updatedLoginState.person,
+                                                    updatedLoginState.doctor,
                                                   );
-                                              // Imprimir los valores de authProvider
+
                                               print(
                                                 'AuthProvider - UserId: ${ref.read(authProvider).userId}, Role: ${ref.read(authProvider).role}',
                                               );
-                                              // Navegar a la pantalla correspondiente según el rol
                                               if (loginState.role == 1) {
                                                 print(
                                                   'Navegando a Home Doctor',

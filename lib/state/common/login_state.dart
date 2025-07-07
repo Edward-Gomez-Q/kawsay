@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_3_kawsay/model/common/person_model.dart';
+import 'package:project_3_kawsay/model/doctor/doctor_model.dart';
 
 class LoginState {
   final TextEditingController emailController;
@@ -10,6 +12,8 @@ class LoginState {
   final String? error;
   final int? role;
   final int? userId;
+  final PersonModel? person;
+  final DoctorModel? doctor;
   LoginState({
     required this.emailController,
     required this.passwordController,
@@ -19,6 +23,8 @@ class LoginState {
     this.error,
     this.role,
     this.userId,
+    this.person,
+    this.doctor,
   });
   LoginState.empty()
     : emailController = TextEditingController(),
@@ -28,7 +34,9 @@ class LoginState {
       obscurePassword = true,
       error = null,
       role = null,
-      userId = null;
+      userId = null,
+      person = null,
+      doctor = null;
   LoginState copyWith({
     TextEditingController? emailController,
     TextEditingController? passwordController,
@@ -38,6 +46,8 @@ class LoginState {
     String? error,
     int? role,
     int? userId,
+    PersonModel? person,
+    DoctorModel? doctor,
   }) {
     return LoginState(
       emailController: emailController ?? this.emailController,
@@ -48,6 +58,8 @@ class LoginState {
       role: role ?? this.role,
       userId: userId ?? this.userId,
       obscurePassword: obscurePassword ?? this.obscurePassword,
+      person: person ?? this.person,
+      doctor: doctor ?? this.doctor,
     );
   }
 
