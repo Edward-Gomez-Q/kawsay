@@ -1,7 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_3_kawsay/state/common/auth_state.dart';
-import 'package:project_3_kawsay/model/common/person_model.dart';
-import 'package:project_3_kawsay/model/common/user_model.dart';
 
 class AuthNotifier extends StateNotifier<AuthModel> {
   AuthNotifier()
@@ -9,40 +7,21 @@ class AuthNotifier extends StateNotifier<AuthModel> {
         AuthModel(
           isAuthenticated: false,
           isLoading: false,
-          isPatient: false,
-          user: null,
-          errorMessage: null,
-          token: null,
+          role: null,
           userId: null,
-          mail: null,
         ),
       );
 
-  void login(PersonModel user, String token, String userId, String userName) {
+  void login(int userId, int role) {
     state = state.copyWith(
       isAuthenticated: true,
       isLoading: false,
-      user: user,
-      token: token,
+      role: role,
       userId: userId,
-      mail: userName,
     );
   }
 
-  void logout() {
-    state = AuthModel(
-      isAuthenticated: false,
-      isLoading: false,
-      isPatient: false,
-      user: null,
-      errorMessage: null,
-      token: null,
-      userId: null,
-      mail: null,
-    );
-  }
-
-  void signUp(UserModel user) {}
+  //Implemntar logout
 }
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthModel>(

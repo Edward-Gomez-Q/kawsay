@@ -25,4 +25,20 @@ class AuthUserRepositorySp {
       throw Exception('Error al crear usuario: $e');
     }
   }
+
+  //Login
+  Future<UserModel?> login(String email, String password) async {
+    try {
+      final response = await _client
+          .from(_tableName)
+          .select()
+          .eq('email', email)
+          .eq('password', password)
+          .single();
+      return response != null ? UserModel.fromMap(response) : null;
+    } catch (e) {
+      print('Error al iniciar sesión: $e');
+      throw Exception('Error al iniciar sesión: $e');
+    }
+  }
 }

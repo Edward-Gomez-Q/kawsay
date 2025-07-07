@@ -22,4 +22,20 @@ class RoleUserReposiotrySp {
       throw Exception('Error al crear RoleUser: $e');
     }
   }
+
+  // Obtener el rol de un usuario
+  Future<int?> getRoleByUserId(int userId) async {
+    try {
+      final response = await _client
+          .from(_tableName)
+          .select('auth_role_id')
+          .eq('auth_user_id', userId)
+          .single();
+
+      return response['auth_role_id'] as int?;
+    } catch (e) {
+      print('Error al obtener rol por usuario: $e');
+      throw Exception('Error al obtener rol por usuario: $e');
+    }
+  }
 }

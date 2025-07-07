@@ -8,6 +8,8 @@ import 'package:project_3_kawsay/presentation/common/login/login.dart';
 import 'package:project_3_kawsay/presentation/common/signup/sign_up.dart';
 import 'package:project_3_kawsay/presentation/common/splash/splash.dart';
 import 'package:project_3_kawsay/presentation/common/welcome/welcome.dart';
+import 'package:project_3_kawsay/presentation/doctor/home/home_doctor.dart';
+import 'package:project_3_kawsay/presentation/patient/home/home_patient.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
@@ -40,9 +42,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (isAuthenticated &&
           (state.matchedLocation == AppRoutes.login ||
               state.matchedLocation == AppRoutes.splash)) {
-        return authState.isPatient
-            ? AppRoutes.homePatient
-            : AppRoutes.homeDoctor;
+        return authState.role == 1
+            ? AppRoutes.homeDoctor
+            : AppRoutes.homePatient;
       }
 
       return null;
@@ -63,6 +65,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.signUp,
         builder: (context, state) => const SignUp(),
+      ),
+      //Patient Routes
+      GoRoute(
+        path: AppRoutes.homePatient,
+        builder: (context, state) => const HomePatient(),
+      ),
+      //Doctor Routes
+      GoRoute(
+        path: AppRoutes.homeDoctor,
+        builder: (context, state) => const HomeDoctor(),
       ),
     ],
     errorBuilder: (context, state) => ErrorScreen(error: state.error),

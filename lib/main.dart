@@ -27,7 +27,7 @@ class MainApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Kawsay',
       themeMode: themeMode,
-      theme: AppTheme.light,
+      theme: AppTheme.dark,
       darkTheme: AppTheme.dark,
       routerConfig: router,
       debugShowCheckedModeBanner: false,

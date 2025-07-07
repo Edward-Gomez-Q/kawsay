@@ -64,7 +64,7 @@ class UserTypeSelectionStep extends ConsumerWidget {
           padding: const EdgeInsets.all(24),
           child: Row(
             children: [
-              Icon(icon, size: 48, color: Theme.of(context).primaryColor),
+              Icon(icon, size: 48, color: Theme.of(context).iconTheme.color),
               const SizedBox(width: 20),
               Expanded(
                 child: Column(
