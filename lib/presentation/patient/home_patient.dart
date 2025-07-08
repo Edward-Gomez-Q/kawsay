@@ -163,25 +163,25 @@ class HomePatient extends ConsumerWidget {
       case 3:
         return const ProfilePatient();
       case 11:
-        return const MedicalCriticalInfoPatient();
+        return const MedicalCriticalInfoPatient(patientId: 1);
       case 12:
-        return const MedicalAllergyPatient();
+        return const MedicalAllergyPatient(patientId: 1);
       case 13:
-        return const ChronicConditionPatient();
+        return const ChronicConditionPatient(patientId: 1);
       case 14:
-        return const SurgicalHistoryPatient();
+        return const SurgicalHistoryPatient(patientId: 1);
       case 15:
-        return const HospitalizationPatient();
+        return const HospitalizationPatient(patientId: 1);
       case 16:
-        return const VaccinationPatient();
+        return const VaccinationPatient(patientId: 1);
       case 17:
-        return const FamilyHistoryPatient();
+        return const FamilyHistoryPatient(patientId: 1);
       case 18:
-        return const LifestylePatient();
+        return const LifestylePatient(patientId: 1);
       case 19:
-        return const InsurancePatient();
+        return const InsurancePatient(patientId: 1);
       case 20:
-        return const EmergencyContactPatient();
+        return const EmergencyContactPatient(patientId: 1);
       default:
         return const HomeScreenPatient();
     }

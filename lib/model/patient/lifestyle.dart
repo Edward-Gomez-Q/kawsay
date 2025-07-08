@@ -5,7 +5,7 @@ class Lifestyle {
   final bool drinksAlcohol;
   final int drinksAlcoholFrequencyPerMonth;
   final bool exercises;
-  final bool exercisesFrequencyPerWeek;
+  final int exercisesFrequencyPerWeek;
   final int sleepHours;
   final String dietType;
 
@@ -29,7 +29,7 @@ class Lifestyle {
       'drinks_alcohol': drinksAlcohol ? 1 : 0,
       'drinks_alcohol_frequency_per_mounth': drinksAlcoholFrequencyPerMonth,
       'exercises': exercises ? 1 : 0,
-      'exercises_frequency_per_week': exercisesFrequencyPerWeek ? 1 : 0,
+      'exercises_frequency_per_week': exercisesFrequencyPerWeek,
       'sleep_hours': sleepHours,
       'diet_type': dietType,
     };
@@ -44,7 +44,7 @@ class Lifestyle {
       drinksAlcoholFrequencyPerMonth:
           map['drinks_alcohol_frequency_per_mounth'],
       exercises: map['exercises'] == 1,
-      exercisesFrequencyPerWeek: map['exercises_frequency_per_week'] == 1,
+      exercisesFrequencyPerWeek: map['exercises_frequency_per_week'],
       sleepHours: map['sleep_hours'],
       dietType: map['diet_type'],
     );

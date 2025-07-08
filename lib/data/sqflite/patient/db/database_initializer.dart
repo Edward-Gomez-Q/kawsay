@@ -12,7 +12,10 @@ class DatabaseInitializer {
   static Future<void> _createTables(Database db) async {
     await db.execute('''
       CREATE TABLE patient (
-        id INTEGER NOT NULL CONSTRAINT patient_pk PRIMARY KEY
+        id INTEGER NOT NULL CONSTRAINT patient_pk PRIMARY KEY,
+        percentage_completed INTEGER NOT NULL DEFAULT 0,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
     ''');
 
@@ -86,7 +89,7 @@ class DatabaseInitializer {
         drinks_alcohol BOOLEAN NOT NULL,
         drinks_alcohol_frequency_per_mounth INTEGER NOT NULL,
         exercises BOOLEAN NOT NULL,
-        exercises_frequency_per_week BOOLEAN NOT NULL,
+        exercises_frequency_per_week INTEGER NOT NULL,
         sleep_hours INTEGER NOT NULL,
         diet_type TEXT NOT NULL,
         CONSTRAINT lifestyle_patient FOREIGN KEY (patient_id)
@@ -149,7 +152,7 @@ class DatabaseInitializer {
 
   static Future<void> _insertDefaultData(Database db) async {
     // Crear paciente por defecto
-    await db.insert('patient', {'id': 1});
+    await db.insert('patient', {'id': 1, 'percentage_completed': 0});
 
     // Insertar datos por defecto de lifestyle
     await db.insert('lifestyle', {

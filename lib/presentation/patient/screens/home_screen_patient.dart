@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_3_kawsay/application/patient/patient_screens_notifier.dart';
+import 'package:project_3_kawsay/state/patient/patient_screens_state.dart';
 
 class HomeScreenPatient extends ConsumerWidget {
   const HomeScreenPatient({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final patientScreensState = ref.watch(patientScreensProvider);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHealthSummaryCard(context),
+          _buildHealthSummaryCard(context, patientScreensState),
           const SizedBox(height: 24),
           _buildQuickActionsSection(context),
           const SizedBox(height: 24),
@@ -23,7 +26,10 @@ class HomeScreenPatient extends ConsumerWidget {
   }
 
   //Widgets para el body
-  Widget _buildHealthSummaryCard(BuildContext context) {
+  Widget _buildHealthSummaryCard(
+    BuildContext context,
+    PatientScreensState state,
+  ) {
     return Card(
       elevation: 2,
       child: Padding(
@@ -59,7 +65,7 @@ class HomeScreenPatient extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Última actualización: Hoy',
+                    'Última actualización: ${state.medicalHistoryLastUpdated != null ? state.medicalHistoryLastUpdated!.toLocal().toString().split(' ')[0] : 'N/A'}',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(
                         context,
@@ -67,9 +73,13 @@ class HomeScreenPatient extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Divider(),
+                  _buildProgressBar(context, state.percentageCompleted / 100),
                   const SizedBox(height: 12),
-                  _buildSummaryItem(context, '✅', 'Perfil: 85% completo'),
+                  _buildSummaryItem(
+                    context,
+                    '🩺',
+                    'Historial Médico: ${state.percentageCompleted}% completo',
+                  ),
                 ],
               ),
             ),

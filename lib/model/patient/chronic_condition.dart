@@ -34,4 +34,8 @@ class ChronicCondition {
       controlled: map['controlled'] == 1,
     );
   }
+  @override
+  String toString() {
+    return 'ChronicCondition{id: $id, patientId: $patientId, condition: $condition, diagnosisDate: $diagnosisDate, controlled: $controlled}';
+  }
 }
