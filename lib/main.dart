@@ -22,12 +22,12 @@ class MainApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeNotifierProvider);
+    final themeMode = ref.watch(themeProvider);
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'Kawsay',
       themeMode: themeMode,
-      theme: AppTheme.dark,
+      theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       routerConfig: router,
       debugShowCheckedModeBanner: false,

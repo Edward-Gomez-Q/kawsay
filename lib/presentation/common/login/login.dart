@@ -4,7 +4,6 @@ import 'package:project_3_kawsay/application/common/auth_notifier.dart';
 import 'package:project_3_kawsay/application/common/login_notifier.dart';
 import 'package:project_3_kawsay/application/common/navigation_service.dart';
 import 'package:project_3_kawsay/presentation/common/widgets/custom_form_fields.dart';
-import 'package:project_3_kawsay/state/common/login_state.dart';
 
 class Login extends ConsumerWidget {
   const Login({super.key});
@@ -161,11 +160,8 @@ class Login extends ConsumerWidget {
                                         ),
                                         onPressed: () {
                                           ref
-                                              .read(loginStateProvider.notifier)
-                                              .state = loginState.copyWith(
-                                            obscurePassword:
-                                                !loginState.obscurePassword,
-                                          );
+                                              .read(loginProvider.notifier)
+                                              .togglePasswordVisibility();
                                         },
                                       ),
                                     ),
@@ -190,11 +186,14 @@ class Login extends ConsumerWidget {
                                             await ref
                                                 .watch(loginProvider.notifier)
                                                 .login();
-                                            final updatedLoginState = ref.read(
+                                            final updatedLoginState = ref.watch(
                                               loginProvider,
                                             );
-                                            if (updatedLoginState.error ==
-                                                null) {
+                                            print(
+                                              'Login State: ${updatedLoginState.isError}, UserId: ${updatedLoginState.userId}, Role: ${updatedLoginState.role}',
+                                            );
+
+                                            if (!updatedLoginState.isError) {
                                               ref
                                                   .watch(authProvider.notifier)
                                                   .login(
@@ -292,19 +291,16 @@ class Login extends ConsumerWidget {
                                             Icons.error_outline,
                                             color: Theme.of(
                                               context,
-                                            ).colorScheme.error,
+                                            ).iconTheme.color,
                                             size: 20,
                                           ),
                                           const SizedBox(width: 8),
                                           Expanded(
                                             child: Text(
                                               loginState.error!,
-                                              style: TextStyle(
-                                                color: Theme.of(
-                                                  context,
-                                                ).colorScheme.error,
-                                                fontSize: 14,
-                                              ),
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.bodySmall,
                                             ),
                                           ),
                                         ],

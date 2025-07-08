@@ -162,32 +162,30 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
       data.userCredentials,
       person.id,
     );
-
-    // Si es doctor, crear datos médicos
-    if (data.userType == UserType.doctor && data.medicalData != null) {
-      await _doctorRepository.createDoctor(data.medicalData!, person.id);
-      // Asignar rol de doctor al usuario
-      await _roleUserRepository.createRoleUser(
-        1, // ID del rol de doctor
-        user.id,
+    if (user == null) {
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Error al crear el usuario',
       );
     } else {
-      // Asignar rol de paciente al usuario
-      await _roleUserRepository.createRoleUser(
-        2, // ID del rol de paciente
-        user.id,
+      if (data.userType == UserType.doctor && data.medicalData != null) {
+        await _doctorRepository.createDoctor(data.medicalData!, person.id);
+
+        await _roleUserRepository.createRoleUser(1, user.id);
+      } else {
+        await _roleUserRepository.createRoleUser(2, user.id);
+      }
+
+      // Actualizar el estado con el usuario creado
+      state = state.copyWith(
+        isLoading: false,
+        error: null,
+        registrationData: data.copyWith(
+          userCredentials: user,
+          personalData: person,
+        ),
       );
     }
-
-    // Actualizar el estado con el usuario creado
-    state = state.copyWith(
-      isLoading: false,
-      error: null,
-      registrationData: data.copyWith(
-        userCredentials: user,
-        personalData: person,
-      ),
-    );
   }
 
   Future<PersonModel> createPerson(PersonModel person) async {

@@ -31,7 +31,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
     if (!state.formKey.currentState!.validate()) {
       return;
     }
-    state = state.copyWith(isLoading: true, error: null);
+    state = state.copyWith(isLoading: true, error: "", isError: false);
     try {
       final user = await _authUserRepository.login(
         state.emailController.text,
@@ -42,9 +42,13 @@ class LoginNotifier extends StateNotifier<LoginState> {
         if (role != null) {
           final person = await _personRepository.getPersonById(user.personId);
           if (person == null) {
-            state = state.copyWith(error: 'Person not found for user');
+            state = state.copyWith(
+              error: 'Cuenta no encontrada',
+              isError: true,
+            );
             return;
           }
+          print("Inicio de sesión exitoso: ${user.email}");
           state = state.copyWith(doctor: null);
           if (role == 1) {
             final doctor = await _doctorRepository.getDoctorByPersonId(
@@ -52,24 +56,31 @@ class LoginNotifier extends StateNotifier<LoginState> {
             );
             state = state.copyWith(doctor: doctor);
           }
-
           state = state.copyWith(
             role: role,
             userId: user.id,
-            error: null,
+            error: "",
             person: person,
+            isError: false,
           );
         } else {
-          state = state.copyWith(error: 'User role not found');
+          state = state.copyWith(error: 'Cuenta no encontrado', isError: true);
         }
       } else {
-        state = state.copyWith(error: 'Invalid email or password');
+        state = state.copyWith(
+          error: 'Email o contraseña incorrectos',
+          isError: true,
+        );
       }
     } catch (e) {
-      state = state.copyWith(error: 'Login failed: $e');
+      state = state.copyWith(error: 'Login fallido', isError: true);
     } finally {
       state = state.copyWith(isLoading: false);
     }
+  }
+
+  void togglePasswordVisibility() {
+    state = state.copyWith(obscurePassword: !state.obscurePassword);
   }
 }
 

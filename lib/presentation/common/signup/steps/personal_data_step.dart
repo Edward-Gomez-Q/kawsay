@@ -17,11 +17,6 @@ class PersonalDataStep extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Datos Personales',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 16),
             Expanded(
               child: Scrollbar(
                 thumbVisibility: true,

@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_3_kawsay/model/common/person_model.dart';
 import 'package:project_3_kawsay/model/doctor/doctor_model.dart';
 
@@ -9,6 +8,7 @@ class LoginState {
   final GlobalKey<FormState> formKey;
   final bool obscurePassword;
   final bool isLoading;
+  final bool isError;
   final String? error;
   final int? role;
   final int? userId;
@@ -20,6 +20,7 @@ class LoginState {
     required this.formKey,
     this.obscurePassword = true,
     this.isLoading = false,
+    this.isError = false,
     this.error,
     this.role,
     this.userId,
@@ -31,18 +32,21 @@ class LoginState {
       passwordController = TextEditingController(),
       formKey = GlobalKey<FormState>(),
       isLoading = false,
+      isError = false,
       obscurePassword = true,
       error = null,
       role = null,
       userId = null,
       person = null,
       doctor = null;
+
   LoginState copyWith({
     TextEditingController? emailController,
     TextEditingController? passwordController,
     GlobalKey<FormState>? formKey,
     bool? obscurePassword,
     bool? isLoading,
+    bool? isError,
     String? error,
     int? role,
     int? userId,
@@ -54,6 +58,7 @@ class LoginState {
       passwordController: passwordController ?? this.passwordController,
       formKey: formKey ?? this.formKey,
       isLoading: isLoading ?? this.isLoading,
+      isError: isError ?? this.isError,
       error: error ?? this.error,
       role: role ?? this.role,
       userId: userId ?? this.userId,
@@ -68,7 +73,3 @@ class LoginState {
     passwordController.dispose();
   }
 }
-
-final loginStateProvider = StateProvider<LoginState>((ref) {
-  return LoginState.empty();
-});

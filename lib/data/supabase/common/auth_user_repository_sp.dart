@@ -7,7 +7,7 @@ class AuthUserRepositorySp {
   AuthUserRepositorySp({SupabaseClient? client})
     : _client = client ?? Supabase.instance.client;
   // CREATE - Crear un nuevo usuario
-  Future<UserModel> createUser(UserModel user, int personId) async {
+  Future<UserModel?> createUser(UserModel user, int personId) async {
     try {
       final data = user.toMap();
       data.remove('id');
@@ -22,7 +22,7 @@ class AuthUserRepositorySp {
       return UserModel.fromMap(response);
     } catch (e) {
       print('Error al crear usuario: $e');
-      throw Exception('Error al crear usuario: $e');
+      return null;
     }
   }
 
@@ -35,10 +35,10 @@ class AuthUserRepositorySp {
           .eq('email', email)
           .eq('password', password)
           .single();
-      return response != null ? UserModel.fromMap(response) : null;
+      return UserModel.fromMap(response);
     } catch (e) {
       print('Error al iniciar sesión: $e');
-      throw Exception('Error al iniciar sesión: $e');
+      return null;
     }
   }
 }

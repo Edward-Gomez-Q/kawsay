@@ -21,12 +21,6 @@ class UserCredentialsStep extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              'Credenciales de Usuario',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-
             Expanded(
               child: SingleChildScrollView(
                 child: Column(

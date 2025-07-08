@@ -76,7 +76,7 @@ class SignUp extends ConsumerWidget {
     dynamic navigation,
   ) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(3),
       child: Column(
         children: [
           // Logo y título
@@ -87,8 +87,8 @@ class SignUp extends ConsumerWidget {
                 tag: 'logo',
                 child: Image.asset(
                   'assets/images/logo_light.png',
-                  width: 40,
-                  height: 40,
+                  width: 30,
+                  height: 30,
                 ),
               ),
               const SizedBox(width: 10),
@@ -127,6 +127,7 @@ class SignUp extends ConsumerWidget {
               else
                 // Botón para volver al welcome cuando está en el primer paso
                 Container(
+                  margin: const EdgeInsets.only(left: 8),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(12),
@@ -146,7 +147,7 @@ class SignUp extends ConsumerWidget {
               Expanded(
                 child: Text(
                   _getStepTitle(state),
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
@@ -183,7 +184,7 @@ class SignUp extends ConsumerWidget {
     final maxSteps = _getMaxSteps(state);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       child: Column(
         children: [
           // Barra de progreso principal
@@ -229,60 +230,10 @@ class SignUp extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(maxSteps, (index) {
               final isActive = index <= state.currentStep;
-              final isCompleted = index < state.currentStep;
 
               return Expanded(
                 child: Column(
                   children: [
-                    // Círculo indicador
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: isCompleted
-                            ? Theme.of(context).colorScheme.primary
-                            : isActive
-                            ? Theme.of(context).colorScheme.secondary
-                            : Theme.of(context).colorScheme.surface,
-                        shape: BoxShape.circle,
-                        boxShadow: isActive
-                            ? [
-                                BoxShadow(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withValues(alpha: 0.3),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ]
-                            : null,
-                      ),
-                      child: Center(
-                        child: isCompleted
-                            ? Icon(
-                                Icons.check,
-                                size: 16,
-                                color: Theme.of(context).colorScheme.onPrimary,
-                              )
-                            : Text(
-                                '${index + 1}',
-                                style: TextStyle(
-                                  color: isActive
-                                      ? Theme.of(
-                                          context,
-                                        ).colorScheme.onSecondary
-                                      : Theme.of(
-                                          context,
-                                        ).colorScheme.onSurfaceVariant,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-
                     // Etiqueta del paso
                     Text(
                       _getStepLabel(index, state),

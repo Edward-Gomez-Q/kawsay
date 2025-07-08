@@ -9,7 +9,7 @@ import 'package:project_3_kawsay/presentation/common/signup/sign_up.dart';
 import 'package:project_3_kawsay/presentation/common/splash/splash.dart';
 import 'package:project_3_kawsay/presentation/common/welcome/welcome.dart';
 import 'package:project_3_kawsay/presentation/doctor/home/home_doctor.dart';
-import 'package:project_3_kawsay/presentation/patient/home/home_patient.dart';
+import 'package:project_3_kawsay/presentation/patient/home_patient.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);

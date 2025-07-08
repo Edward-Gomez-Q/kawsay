@@ -1,74 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_3_kawsay/application/common/auth_notifier.dart';
-import 'package:project_3_kawsay/application/common/navigation_service.dart';
 
-class HomePatient extends ConsumerWidget {
-  const HomePatient({super.key});
+class HomeScreenPatient extends ConsumerWidget {
+  const HomeScreenPatient({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final navigation = ref.read(navigationServiceProvider);
-    final authMethods = ref.read(authProvider.notifier);
-
-    return Scaffold(
-      appBar: _buildAppBar(context, authMethods, navigation),
-      body: const _HomePatientBody(),
-      bottomNavigationBar: const _BottomNavigationBar(),
-    );
-  }
-
-  AppBar _buildAppBar(
-    BuildContext context,
-    dynamic authMethods,
-    dynamic navigation,
-  ) {
-    return AppBar(
-      backgroundColor: Theme.of(context).primaryColor,
-      foregroundColor: Colors.white,
-      title: Row(
-        children: [
-          const Text('☀️'),
-          const SizedBox(width: 8),
-          Text(
-            'Buenos días, Juan',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.notifications_outlined),
-          onPressed: () {
-            // Handle notifications
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.settings_outlined),
-          onPressed: () {
-            // Handle settings
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.logout),
-          onPressed: () {
-            authMethods.logout();
-            navigation.goToWelcome();
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class _HomePatientBody extends StatelessWidget {
-  const _HomePatientBody();
-
-  @override
-  Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -85,6 +22,7 @@ class _HomePatientBody extends StatelessWidget {
     );
   }
 
+  //Widgets para el body
   Widget _buildHealthSummaryCard(BuildContext context) {
     return Card(
       elevation: 2,
@@ -132,10 +70,6 @@ class _HomePatientBody extends StatelessWidget {
                   const Divider(),
                   const SizedBox(height: 12),
                   _buildSummaryItem(context, '✅', 'Perfil: 85% completo'),
-                  const SizedBox(height: 8),
-                  _buildSummaryItem(context, '📅', 'Próxima cita: 15 Jul'),
-                  const SizedBox(height: 8),
-                  _buildSummaryItem(context, '💊', 'Medicamentos: 2 activos'),
                 ],
               ),
             ),
@@ -329,111 +263,6 @@ class _HomePatientBody extends StatelessWidget {
             color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(4),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _BottomNavigationBar extends StatelessWidget {
-  const _BottomNavigationBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildBottomNavItem(
-                context,
-                Icons.home_outlined,
-                'Casa',
-                isSelected: true,
-                onTap: () {
-                  // Handle home navigation
-                },
-              ),
-              _buildBottomNavItem(
-                context,
-                Icons.bar_chart_outlined,
-                'Hist.',
-                onTap: () {
-                  // Handle history navigation
-                },
-              ),
-              _buildBottomNavItem(
-                context,
-                Icons.medication_outlined,
-                'Meds',
-                onTap: () {
-                  // Handle medications navigation
-                },
-              ),
-              _buildBottomNavItem(
-                context,
-                Icons.share_outlined,
-                'Comp.',
-                onTap: () {
-                  // Handle share navigation
-                },
-              ),
-              _buildBottomNavItem(
-                context,
-                Icons.person_outline,
-                'Perfil',
-                onTap: () {
-                  // Handle profile navigation
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBottomNavItem(
-    BuildContext context,
-    IconData icon,
-    String label, {
-    bool isSelected = false,
-    required VoidCallback onTap,
-  }) {
-    final color = isSelected
-        ? Theme.of(context).primaryColor
-        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: color, size: 24),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: color,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              ),
-            ),
-          ],
         ),
       ),
     );
