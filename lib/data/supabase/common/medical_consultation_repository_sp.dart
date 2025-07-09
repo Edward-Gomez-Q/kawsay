@@ -6,6 +6,7 @@ class MedicalConsultationRepositorySp {
   final String _tableName = 'medical_consultation';
   MedicalConsultationRepositorySp({SupabaseClient? client})
     : _client = client ?? Supabase.instance.client;
+
   Future<MedicalConsultationModel> createMedicalConsultation(
     MedicalConsultationModel consultation,
   ) async {
