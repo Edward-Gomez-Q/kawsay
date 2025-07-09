@@ -125,4 +125,20 @@ class MedicalConsultationRepositorySp {
       throw Exception('Error al obtener consulta médica por ID de cita: $e');
     }
   }
+
+  //Obtener la cantidad de consultas médicas por doctor
+  Future<int> getMedicalConsultationCountByDoctorId(int doctorId) async {
+    try {
+      final response = await _client
+          .from(_tableName)
+          .select()
+          .eq('appointment.doctor_id', doctorId)
+          .count();
+
+      return response.count;
+    } catch (e) {
+      print('Error al obtener cantidad de consultas médicas del doctor: $e');
+      return 0;
+    }
+  }
 }

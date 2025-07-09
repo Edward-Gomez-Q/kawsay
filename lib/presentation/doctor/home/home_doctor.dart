@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_3_kawsay/application/common/auth_notifier.dart';
 import 'package:project_3_kawsay/application/common/navigation_service.dart';
 import 'package:project_3_kawsay/application/core/theme_notifier.dart';
+import 'package:project_3_kawsay/application/doctor/home_doctor_notifier.dart';
 import 'package:project_3_kawsay/state/common/auth_state.dart';
+import 'package:project_3_kawsay/state/doctor/home_doctor_state.dart';
 
 class HomeDoctor extends ConsumerWidget {
   const HomeDoctor({super.key});
@@ -13,6 +15,9 @@ class HomeDoctor extends ConsumerWidget {
     final navigation = ref.read(navigationServiceProvider);
     final authState = ref.watch(authProvider);
     final themeData = Theme.of(context);
+    final doctorId = authState.doctor?.id;
+
+    final homeDoctorState = ref.watch(homeDoctorProvider(doctorId!));
 
     return Scaffold(
       appBar: AppBar(
@@ -36,6 +41,8 @@ class HomeDoctor extends ConsumerWidget {
               if (value == 'logout') {
                 ref.read(authProvider.notifier).logout();
                 navigation.goToLogin();
+              } else if (value == 'profile') {
+                navigation.goToProfileDoctor();
               }
             },
             itemBuilder: (context) => [
@@ -49,6 +56,17 @@ class HomeDoctor extends ConsumerWidget {
                   ],
                 ),
               ),
+              //Perfil doctor
+              const PopupMenuItem(
+                value: 'profile',
+                child: Row(
+                  children: [
+                    Icon(Icons.person),
+                    SizedBox(width: 8),
+                    Text('Perfil'),
+                  ],
+                ),
+              ),
             ],
           ),
         ],
@@ -59,17 +77,10 @@ class HomeDoctor extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header de bienvenida
               _buildWelcomeSection(context, authState),
-
               const SizedBox(height: 24),
-
-              // Estadísticas rápidas
-              _buildQuickStats(context),
-
+              _buildQuickStats(context, homeDoctorState),
               const SizedBox(height: 24),
-
-              // Acciones principales
               Text(
                 'Acciones Principales',
                 style: themeData.textTheme.headlineSmall?.copyWith(
@@ -96,17 +107,9 @@ class HomeDoctor extends ConsumerWidget {
                     _buildActionCard(
                       context,
                       icon: Icons.people,
-                      title: 'Mis Pacientes',
+                      title: 'Mis Consultas',
                       onTap: () {
                         navigation.goToPatientList();
-                      },
-                    ),
-                    _buildActionCard(
-                      context,
-                      icon: Icons.medical_services,
-                      title: 'Diagnósticos',
-                      onTap: () {
-                        navigation.goToPatientDiagnostics();
                       },
                     ),
                   ],
@@ -179,24 +182,19 @@ class HomeDoctor extends ConsumerWidget {
     );
   }
 
-  Widget _buildQuickStats(BuildContext context) {
+  Widget _buildQuickStats(
+    BuildContext context,
+    HomeDoctorState homeDoctorProvider,
+  ) {
     return Row(
       children: [
-        Expanded(
-          child: _buildStatCard(
-            context,
-            icon: Icons.people,
-            title: 'Pacientes',
-            value: '24',
-          ),
-        ),
         const SizedBox(width: 12),
         Expanded(
           child: _buildStatCard(
             context,
             icon: Icons.calendar_today,
             title: 'Citas',
-            value: '12',
+            value: homeDoctorProvider.appointmentCount.toString(),
           ),
         ),
         const SizedBox(width: 12),
@@ -205,7 +203,7 @@ class HomeDoctor extends ConsumerWidget {
             context,
             icon: Icons.medical_services,
             title: 'Diagnósticos',
-            value: '48',
+            value: homeDoctorProvider.diagnosticsCount.toString(),
           ),
         ),
       ],
@@ -243,9 +241,8 @@ class HomeDoctor extends ConsumerWidget {
           ),
           Text(
             title,
-            style: themeData.textTheme.bodySmall?.copyWith(
+            style: themeData.textTheme.bodyMedium?.copyWith(
               color: themeData.colorScheme.onSurface,
-              fontSize: 8,
             ),
           ),
         ],

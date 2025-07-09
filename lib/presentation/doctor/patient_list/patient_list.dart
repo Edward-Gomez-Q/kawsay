@@ -34,14 +34,10 @@ class _PatientListState extends ConsumerState<PatientList> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Lista de Pacientes',
+          'Lista de Consultas',
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => patientListNotifier.refreshAppointments(idDoctor),
-          ),
           IconButton(
             icon: const Icon(Icons.home),
             onPressed: () {
@@ -215,14 +211,22 @@ class _PatientListState extends ConsumerState<PatientList> {
             Row(
               children: [
                 Expanded(
-                  child: Text(
-                    appointment.fullPatientName,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.person_outline,
+                        size: 24,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        appointment.fullPatientName,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                 ),
-                _buildStatusChip(context, appointment.appointmentStatus),
               ],
             ),
 
@@ -259,20 +263,10 @@ class _PatientListState extends ConsumerState<PatientList> {
                 ),
               ],
             ),
-
             const SizedBox(height: 16),
-
-            // Botones de acción
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                OutlinedButton(
-                  onPressed: () {
-                    // Acción para ver detalles
-                    _showAppointmentDetails(context, appointment);
-                  },
-                  child: const Text('Ver detalles'),
-                ),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () {
@@ -289,79 +283,8 @@ class _PatientListState extends ConsumerState<PatientList> {
     );
   }
 
-  Widget _buildStatusChip(BuildContext context, String status) {
-    Color chipColor;
-    Color textColor;
-
-    switch (status.toLowerCase()) {
-      case 'programada':
-        chipColor = Theme.of(context).colorScheme.primary;
-        textColor = Theme.of(context).colorScheme.onPrimary;
-        break;
-      case 'completada':
-        chipColor = Colors.green;
-        textColor = Colors.white;
-        break;
-      case 'cancelada':
-        chipColor = Theme.of(context).colorScheme.error;
-        textColor = Theme.of(context).colorScheme.onError;
-        break;
-      default:
-        chipColor = Theme.of(context).colorScheme.surface;
-        textColor = Theme.of(context).colorScheme.onSurfaceVariant;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: chipColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        status,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: textColor,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
-  }
-
-  void _showAppointmentDetails(
-    BuildContext context,
-    AppointmentWithPatientModel appointment,
-  ) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Detalles de la Cita',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Paciente: ${appointment.fullPatientName}'),
-            Text('ID Cita: ${appointment.id}'),
-            Text('Código: ${appointment.shareCode}'),
-            Text('Fecha: ${_formatDate(appointment.appointmentDate)}'),
-            Text('Estado: ${appointment.appointmentStatus}'),
-            Text('Tipo: ${appointment.consultationType}'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cerrar'),
-          ),
-        ],
-      ),
-    );
   }
 
   void _showDiagnostics(BuildContext context, int appointmentId) {

@@ -64,4 +64,20 @@ class AppointmentRepositorySp {
       return [];
     }
   }
+
+  //Obtener la cantidad de citas por doctor
+  Future<int> getAppointmentCountByDoctor(int doctorId) async {
+    try {
+      final response = await _client
+          .from(_tableName)
+          .select()
+          .eq('doctor_id', doctorId)
+          .count();
+
+      return response.count;
+    } catch (e) {
+      print('Error al obtener cantidad de citas del doctor: $e');
+      return 0;
+    }
+  }
 }

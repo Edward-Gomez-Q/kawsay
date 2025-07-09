@@ -21,6 +21,7 @@ class NavigationService {
   void goToPatientList() => router.go(AppRoutes.patientList);
   void goToPatientDiagnostics() => router.go(AppRoutes.patientDiagnostics);
   void goToReceiveCode() => router.go(AppRoutes.receiveCode);
+  void goToProfileDoctor() => router.go(AppRoutes.profileDoctor);
 }
 
 final navigationServiceProvider = Provider<NavigationService>(
