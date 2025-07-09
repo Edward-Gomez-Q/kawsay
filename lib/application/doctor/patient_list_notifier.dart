@@ -1,13 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_3_kawsay/data/supabase/common/appointment_repository_sp.dart';
+import 'package:project_3_kawsay/data/supabase/common/medical_consultation_repository_sp.dart';
 import 'package:project_3_kawsay/model/doctor/appointment_with_patient_model.dart';
 import 'package:project_3_kawsay/state/doctor/patient_list_state.dart';
 
 class PatientListNotifier extends StateNotifier<PatientListState> {
   final AppointmentRepositorySp _appointmentRepository;
+  final MedicalConsultationRepositorySp _medicalConsultationRepositorySp;
 
-  PatientListNotifier(this._appointmentRepository)
-    : super(const PatientListState());
+  PatientListNotifier(
+    this._appointmentRepository,
+    this._medicalConsultationRepositorySp,
+  ) : super(const PatientListState());
 
   Future<void> loadAppointments(int doctorId) async {
     state = state.copyWith(isLoading: true, error: null);
@@ -21,6 +25,23 @@ class PatientListNotifier extends StateNotifier<PatientListState> {
       state = state.copyWith(
         isLoading: false,
         error: 'Error al cargar las citas: $e',
+      );
+    }
+  }
+
+  Future<void> loadConsultations(int idAppointment) async {
+    state = state.copyWith(isLoadingConsultations: true, consultations: []);
+    try {
+      final consultations = await _medicalConsultationRepositorySp
+          .getMedicalConsultationByAppointmentId(idAppointment);
+      state = state.copyWith(
+        consultations: consultations,
+        isLoadingConsultations: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoadingConsultations: false,
+        error: 'Error al cargar las consultas médicas: $e',
       );
     }
   }
@@ -46,10 +67,19 @@ class PatientListNotifier extends StateNotifier<PatientListState> {
   Future<void> refreshAppointments(int doctorId) async {
     await loadAppointments(doctorId);
   }
+
+  // vaciar la lista de consultas médicas
+  void clearConsultations() {
+    state = state.copyWith(consultations: []);
+  }
 }
 
 final patientListProvider =
     StateNotifierProvider<PatientListNotifier, PatientListState>((ref) {
       final appointmentRepository = AppointmentRepositorySp();
-      return PatientListNotifier(appointmentRepository);
+      final medicalConsultationRepository = MedicalConsultationRepositorySp();
+      return PatientListNotifier(
+        appointmentRepository,
+        medicalConsultationRepository,
+      );
     });

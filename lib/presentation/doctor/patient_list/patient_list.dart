@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_3_kawsay/application/common/auth_notifier.dart';
 import 'package:project_3_kawsay/application/common/navigation_service.dart';
 import 'package:project_3_kawsay/application/doctor/patient_list_notifier.dart';
+import 'package:project_3_kawsay/model/common/medical_consultation_model.dart';
 import 'package:project_3_kawsay/model/doctor/appointment_with_patient_model.dart';
 import 'package:project_3_kawsay/state/doctor/patient_list_state.dart';
 
@@ -87,6 +88,7 @@ class _PatientListState extends ConsumerState<PatientList> {
               context,
               patientListState,
               patientListNotifier,
+              idDoctor,
             ),
           ),
         ],
@@ -98,6 +100,7 @@ class _PatientListState extends ConsumerState<PatientList> {
     BuildContext context,
     PatientListState state,
     PatientListNotifier notifier,
+    int idDoctor,
   ) {
     if (state.isLoading) {
       return Center(
@@ -181,7 +184,13 @@ class _PatientListState extends ConsumerState<PatientList> {
         itemCount: filteredAppointments.length,
         itemBuilder: (context, index) {
           final appointment = filteredAppointments[index];
-          return _buildAppointmentCard(context, appointment);
+          return _buildAppointmentCard(
+            context,
+            appointment,
+            state,
+            notifier,
+            idDoctor,
+          );
         },
       ),
     );
@@ -190,6 +199,9 @@ class _PatientListState extends ConsumerState<PatientList> {
   Widget _buildAppointmentCard(
     BuildContext context,
     AppointmentWithPatientModel appointment,
+    PatientListState state,
+    PatientListNotifier notifier,
+    int idDoctor,
   ) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -264,10 +276,10 @@ class _PatientListState extends ConsumerState<PatientList> {
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () {
-                    // Acción para abrir consulta
-                    _openConsultation(context, appointment);
+                    notifier.loadConsultations(appointment.id);
+                    _showDiagnostics(context, appointment.id);
                   },
-                  child: const Text('Consultar'),
+                  child: const Text('Ver Diagnósticos'),
                 ),
               ],
             ),
@@ -352,16 +364,278 @@ class _PatientListState extends ConsumerState<PatientList> {
     );
   }
 
-  void _openConsultation(
+  void _showDiagnostics(BuildContext context, int appointmentId) {
+    showDialog(
+      context: context,
+      builder: (context) => Consumer(
+        builder: (context, ref, child) {
+          final state = ref.watch(patientListProvider);
+
+          return AlertDialog(
+            title: Text(
+              'Diagnósticos',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            content: _buildDialogContent(context, state),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cerrar'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildDialogContent(BuildContext context, PatientListState state) {
+    if (state.isLoadingConsultations) {
+      return const SizedBox(
+        height: 100,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 16),
+              Text('Cargando diagnósticos...'),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (state.error != null) {
+      return SizedBox(
+        height: 100,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 48,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Error al cargar diagnósticos',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                state.error!,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final consultations = state.consultations ?? [];
+
+    if (consultations.isEmpty) {
+      return SizedBox(
+        height: 100,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.assignment_outlined,
+                size: 48,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'No hay diagnósticos disponibles.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return SizedBox(
+      width: double.maxFinite,
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: consultations.length,
+        itemBuilder: (context, index) {
+          final consultation = consultations[index];
+          return Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            elevation: 2,
+            child: ExpansionTile(
+              leading: CircleAvatar(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                child: Text(
+                  '${index + 1}',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              title: Text(
+                consultation.diagnosis,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              subtitle: Text(
+                'Fecha: ${_formatDate(consultation.followUpDate)}',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontSize: 12,
+                ),
+              ),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildDetailSection(
+                        context,
+                        'Motivo de Consulta',
+                        consultation.chiefComplaint,
+                        Icons.chat_bubble_outline,
+                      ),
+                      _buildDetailSection(
+                        context,
+                        'Examen Físico',
+                        consultation.physicalExamination,
+                        Icons.medical_services_outlined,
+                      ),
+                      _buildDetailSection(
+                        context,
+                        'Signos Vitales',
+                        consultation.vitalSigns,
+                        Icons.favorite_outline,
+                      ),
+                      _buildDetailSection(
+                        context,
+                        'Plan de Tratamiento',
+                        consultation.treatmentPlan,
+                        Icons.healing_outlined,
+                      ),
+                      _buildDetailSection(
+                        context,
+                        'Observaciones',
+                        consultation.observations,
+                        Icons.note_outlined,
+                      ),
+                      _buildDetailSection(
+                        context,
+                        'Instrucciones de Seguimiento',
+                        consultation.followUpInstructions,
+                        Icons.info_outline,
+                      ),
+                      const SizedBox(height: 12),
+                      _buildFollowUpCard(context, consultation),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildDetailSection(
     BuildContext context,
-    AppointmentWithPatientModel appointment,
+    String title,
+    String content,
+    IconData icon,
   ) {
-    // Aquí puedes navegar a la pantalla de consulta
-    // navigation.pushNamed('/consultation', arguments: appointment);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Abriendo consulta para ${appointment.fullPatientName}'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+    if (content.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(content, style: Theme.of(context).textTheme.bodyMedium),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFollowUpCard(
+    BuildContext context,
+    MedicalConsultationModel consultation,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: consultation.nextAppointmentRecommended
+            ? Theme.of(context).colorScheme.primaryContainer
+            : Theme.of(context).colorScheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            consultation.nextAppointmentRecommended
+                ? Icons.event_available
+                : Icons.event_busy,
+            color: consultation.nextAppointmentRecommended
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.onSurfaceVariant,
+            size: 20,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Próxima Cita',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  consultation.nextAppointmentRecommended
+                      ? 'Recomendada para ${_formatDate(consultation.followUpDate)}'
+                      : 'No recomendada',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
