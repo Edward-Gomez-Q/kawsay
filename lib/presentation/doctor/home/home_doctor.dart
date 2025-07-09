@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_3_kawsay/application/common/auth_notifier.dart';
 import 'package:project_3_kawsay/application/common/navigation_service.dart';
+import 'package:project_3_kawsay/application/core/theme_notifier.dart';
+import 'package:project_3_kawsay/state/common/auth_state.dart';
 
 class HomeDoctor extends ConsumerWidget {
   const HomeDoctor({super.key});
@@ -8,24 +11,289 @@ class HomeDoctor extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final navigation = ref.read(navigationServiceProvider);
+    final authState = ref.watch(authProvider);
+    final themeData = Theme.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Home Doctor')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Welcome to the Doctor\'s Home Page',
-              style: TextStyle(fontSize: 24),
+      appBar: AppBar(
+        title: Text(
+          'Dr. ${authState.person?.firstLastName ?? 'Doctor'}',
+          style: themeData.textTheme.titleLarge,
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              themeData.brightness == Brightness.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
+            onPressed: () {
+              ref.read(themeProvider.notifier).toggleTheme();
+            },
+          ),
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'logout') {
+                ref.read(authProvider.notifier).logout();
                 navigation.goToLogin();
-              },
-              child: const Text('Go to Patient List'),
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout),
+                    SizedBox(width: 8),
+                    Text('Cerrar Sesión'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header de bienvenida
+              _buildWelcomeSection(context, authState),
+
+              const SizedBox(height: 24),
+
+              // Estadísticas rápidas
+              _buildQuickStats(context),
+
+              const SizedBox(height: 24),
+
+              // Acciones principales
+              Text(
+                'Acciones Principales',
+                style: themeData.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 16),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 1.2,
+                  children: [
+                    _buildActionCard(
+                      context,
+                      icon: Icons.qr_code_scanner,
+                      title: 'Recibir Código',
+                      onTap: () {
+                        navigation.goToReceiveCode();
+                      },
+                    ),
+                    _buildActionCard(
+                      context,
+                      icon: Icons.people,
+                      title: 'Mis Pacientes',
+                      onTap: () {
+                        navigation.goToPatientList();
+                      },
+                    ),
+                    _buildActionCard(
+                      context,
+                      icon: Icons.medical_services,
+                      title: 'Diagnósticos',
+                      onTap: () {
+                        navigation.goToPatientDiagnostics();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWelcomeSection(BuildContext context, AuthModel authState) {
+    final themeData = Theme.of(context);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: themeData.colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundColor: themeData.colorScheme.primary,
+                child: Icon(
+                  Icons.person,
+                  size: 30,
+                  color: themeData.colorScheme.onPrimary,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '¡Bienvenido!',
+                      style: themeData.textTheme.headlineSmall?.copyWith(
+                        color: themeData.colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Dr. ${authState.person?.firstLastName ?? 'Doctor'}',
+                      style: themeData.textTheme.bodyLarge?.copyWith(
+                        color: themeData.colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                    if (authState.doctor?.specialization != null)
+                      Text(
+                        authState.doctor!.specialization,
+                        style: themeData.textTheme.bodyMedium?.copyWith(
+                          color: themeData.colorScheme.onPrimaryContainer
+                              .withValues(alpha: 0.8),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickStats(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildStatCard(
+            context,
+            icon: Icons.people,
+            title: 'Pacientes',
+            value: '24',
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildStatCard(
+            context,
+            icon: Icons.calendar_today,
+            title: 'Citas',
+            value: '12',
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildStatCard(
+            context,
+            icon: Icons.medical_services,
+            title: 'Diagnósticos',
+            value: '48',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String value,
+  }) {
+    final themeData = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: themeData.colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: themeData.colorScheme.outline.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 24, color: themeData.colorScheme.primary),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: themeData.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: themeData.colorScheme.onSurface,
             ),
-          ],
+          ),
+          Text(
+            title,
+            style: themeData.textTheme.bodySmall?.copyWith(
+              color: themeData.colorScheme.onSurface,
+              fontSize: 8,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    final themeData = Theme.of(context);
+
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: themeData.colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  size: 24,
+                  color: themeData.colorScheme.primary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                style: themeData.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

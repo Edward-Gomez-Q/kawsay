@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'dart:math';
-import 'package:encrypt/encrypt.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_3_kawsay/application/common/encryption_service.dart';
 import 'package:project_3_kawsay/data/sqflite/patient/repositories/chronic_condition_repository.dart';
 import 'package:project_3_kawsay/data/sqflite/patient/repositories/emergency_contact_repository.dart';
 import 'package:project_3_kawsay/data/sqflite/patient/repositories/family_history_repository.dart';
@@ -40,8 +38,6 @@ class ShareDataNotifier extends StateNotifier<ShareDataState> {
   final PersonRepositorySp _personRepository = PersonRepositorySp();
   final int patientId;
   final int personId;
-  static final _key = Key.fromUtf8(dotenv.env['PRIVATE_KEY']!.padRight(32));
-  static final _iv = IV.fromLength(16);
 
   final SharingSessionRepositorySp _sharingSessionRepository =
       SharingSessionRepositorySp();
@@ -217,17 +213,7 @@ class ShareDataNotifier extends StateNotifier<ShareDataState> {
   }
 
   Future<String> _encodeDataWithPrivateKey(MedicalHistoryModel data) async {
-    final jsonString = jsonEncode(data.toMap());
-    final encrypter = Encrypter(AES(_key, mode: AESMode.cbc));
-    final encrypted = encrypter.encrypt(jsonString, iv: _iv);
-    return encrypted.base64;
-  }
-
-  MedicalHistoryModel decryptModel(String encryptedBase64) {
-    final encrypter = Encrypter(AES(_key, mode: AESMode.cbc));
-    final decrypted = encrypter.decrypt64(encryptedBase64, iv: _iv);
-    final map = jsonDecode(decrypted) as Map<String, dynamic>;
-    return MedicalHistoryModel.fromMap(map);
+    return EncryptionService.encodeDataWithPrivateKey(data);
   }
 
   Future<void> _uploadToCloud(

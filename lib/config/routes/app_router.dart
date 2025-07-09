@@ -8,7 +8,10 @@ import 'package:project_3_kawsay/presentation/common/login/login.dart';
 import 'package:project_3_kawsay/presentation/common/signup/sign_up.dart';
 import 'package:project_3_kawsay/presentation/common/splash/splash.dart';
 import 'package:project_3_kawsay/presentation/common/welcome/welcome.dart';
+import 'package:project_3_kawsay/presentation/doctor/diagnostitcs_list/diagnostics_list.dart';
 import 'package:project_3_kawsay/presentation/doctor/home/home_doctor.dart';
+import 'package:project_3_kawsay/presentation/doctor/patient_list/patient_list.dart';
+import 'package:project_3_kawsay/presentation/doctor/receive_code/receive_code.dart';
 import 'package:project_3_kawsay/presentation/patient/home_patient.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -75,6 +78,18 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.homeDoctor,
         builder: (context, state) => const HomeDoctor(),
+      ),
+      GoRoute(
+        path: AppRoutes.patientList,
+        builder: (context, state) => const PatientList(),
+      ),
+      GoRoute(
+        path: AppRoutes.patientDiagnostics,
+        builder: (context, state) => const DiagnosticsList(),
+      ),
+      GoRoute(
+        path: AppRoutes.receiveCode,
+        builder: (context, state) => const ReceiveCode(),
       ),
     ],
     errorBuilder: (context, state) => ErrorScreen(error: state.error),

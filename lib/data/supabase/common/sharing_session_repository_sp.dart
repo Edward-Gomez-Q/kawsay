@@ -43,4 +43,22 @@ class SharingSessionRepositorySp {
       throw Exception('Error al obtener sesión de compartición: $e');
     }
   }
+
+  //Obtener todas las sesiones de compartición de un paciente
+  Future<List<SharingSessionModel>> getSharingSessionsByPatientId(
+    String patientId,
+  ) async {
+    try {
+      final response = await _client
+          .from(_tableName)
+          .select()
+          .eq('patient_id', patientId);
+      return (response as List)
+          .map((item) => SharingSessionModel.fromMap(item))
+          .toList();
+    } catch (e) {
+      print('Error al obtener sesiones de compartición: $e');
+      throw Exception('Error al obtener sesiones de compartición: $e');
+    }
+  }
 }

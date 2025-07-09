@@ -11,4 +11,7 @@ class AppRoutes {
   //Doctor
   static const String doctor = '/doctor';
   static const String homeDoctor = '$doctor/home';
+  static const String patientList = '$doctor/patient-list';
+  static const String patientDiagnostics = '$doctor/diagnostics';
+  static const String receiveCode = '$doctor/receive-code';
 }

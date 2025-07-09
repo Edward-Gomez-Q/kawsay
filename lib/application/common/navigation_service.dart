@@ -18,6 +18,9 @@ class NavigationService {
   void goToSplash() => router.go(AppRoutes.splash);
   void goToHomeDoctor() => router.go(AppRoutes.homeDoctor);
   void goToHomePatient() => router.go(AppRoutes.homePatient);
+  void goToPatientList() => router.go(AppRoutes.patientList);
+  void goToPatientDiagnostics() => router.go(AppRoutes.patientDiagnostics);
+  void goToReceiveCode() => router.go(AppRoutes.receiveCode);
 }
 
 final navigationServiceProvider = Provider<NavigationService>(
