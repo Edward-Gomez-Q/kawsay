@@ -36,4 +36,8 @@ class Insurance {
       endDate: DateTime.parse(map['end_date']),
     );
   }
+  @override
+  String toString() {
+    return 'Insurance{id: $id, patientId: $patientId, provider: $provider, policyNumber: $policyNumber, startDate: $startDate, endDate: $endDate}';
+  }
 }

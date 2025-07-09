@@ -36,4 +36,8 @@ class Vaccination {
       institution: map['institution'],
     );
   }
+  @override
+  String toString() {
+    return 'Vaccination{id: $id, patientId: $patientId, vaccine: $vaccine, dose: $dose, dateVaccine: $dateVaccine, institution: $institution}';
+  }
 }

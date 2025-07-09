@@ -32,4 +32,8 @@ class FamilyHistory {
       ageOfOnset: map['age_of_onset'],
     );
   }
+  @override
+  String toString() {
+    return 'FamilyHistory{id: $id, patientId: $patientId, relationship: $relationship, condition: $condition, ageOfOnset: $ageOfOnset}';
+  }
 }

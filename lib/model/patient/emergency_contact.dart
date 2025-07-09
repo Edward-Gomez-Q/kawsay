@@ -36,4 +36,9 @@ class EmergencyContact {
       isFamilyDoctor: map['is_family_doctor'] == 1,
     );
   }
+
+  @override
+  String toString() {
+    return 'EmergencyContact{id: $id, patientId: $patientId, fullName: $fullName, relationship: $relationship, phone: $phone, isFamilyDoctor: $isFamilyDoctor}';
+  }
 }

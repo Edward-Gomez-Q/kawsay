@@ -36,4 +36,8 @@ class MedicalAllergy {
       severity: map['severity'],
     );
   }
+  @override
+  String toString() {
+    return 'MedicalAllergy{id: $id, patientId: $patientId, allergenFrom: $allergenFrom, allergen: $allergen, reaction: $reaction, severity: $severity}';
+  }
 }

@@ -49,4 +49,8 @@ class Lifestyle {
       dietType: map['diet_type'],
     );
   }
+  @override
+  String toString() {
+    return 'Lifestyle{id: $id, patientId: $patientId, smokes: $smokes, drinksAlcohol: $drinksAlcohol, drinksAlcoholFrequencyPerMonth: $drinksAlcoholFrequencyPerMonth, exercises: $exercises, exercisesFrequencyPerWeek: $exercisesFrequencyPerWeek, sleepHours: $sleepHours, dietType: $dietType}';
+  }
 }

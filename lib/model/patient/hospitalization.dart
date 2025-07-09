@@ -32,4 +32,8 @@ class Hospitalization {
       dischargeDate: DateTime.parse(map['discharge_date']),
     );
   }
+  @override
+  String toString() {
+    return 'Hospitalization{id: $id, patientId: $patientId, reason: $reason, admissionDate: $admissionDate, dischargeDate: $dischargeDate}';
+  }
 }

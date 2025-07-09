@@ -19,7 +19,6 @@ class _EmergencyContactPatientState
   @override
   void initState() {
     super.initState();
-    // Cargar contactos al inicializar
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(emergencyContactProvider(widget.patientId).notifier)
@@ -33,8 +32,6 @@ class _EmergencyContactPatientState
     final notifier = ref.read(
       emergencyContactProvider(widget.patientId).notifier,
     );
-
-    // Mostrar error si existe
     if (state.error != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -49,7 +46,6 @@ class _EmergencyContactPatientState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header con botón de agregar
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -71,8 +67,6 @@ class _EmergencyContactPatientState
             ],
           ),
           const SizedBox(height: 16),
-
-          // Lista de contactos
           Expanded(
             child: state.isLoading
                 ? const Center(child: CircularProgressIndicator())

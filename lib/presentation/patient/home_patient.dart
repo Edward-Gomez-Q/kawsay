@@ -58,6 +58,9 @@ class _HomePatientState extends ConsumerState<HomePatient> {
     final int patientId = ref.watch(
       authProvider.select((state) => state.patientId?.id ?? 0),
     );
+    final int personId = ref.watch(
+      authProvider.select((state) => state.person?.id ?? 0),
+    );
 
     final patientScreensState = ref.watch(patientScreensProvider);
 
@@ -73,7 +76,7 @@ class _HomePatientState extends ConsumerState<HomePatient> {
         margin: const EdgeInsets.all(8),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: _buildCurrentStep(patientScreensState, patientId),
+          child: _buildCurrentStep(patientScreensState, patientId, personId),
         ),
       ),
       bottomNavigationBar: Container(
@@ -179,14 +182,18 @@ class _HomePatientState extends ConsumerState<HomePatient> {
   }
 
   // Widget para el contenido de la pantalla
-  Widget _buildCurrentStep(PatientScreensState state, int patientId) {
+  Widget _buildCurrentStep(
+    PatientScreensState state,
+    int patientId,
+    int personId,
+  ) {
     switch (state.currentStep) {
       case 0:
         return const HomeScreenPatient();
       case 1:
         return const MedicalHistoryPatient();
       case 2:
-        return const ShareDataPatient();
+        return ShareDataPatient(patientId: patientId, personId: personId);
       case 3:
         return const ProfilePatient();
       case 11:

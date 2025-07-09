@@ -36,4 +36,8 @@ class SurgicalHistory {
       noteComplications: map['note_complications'],
     );
   }
+  @override
+  String toString() {
+    return 'SurgicalHistory{id: $id, patientId: $patientId, surgery: $surgery, surgeryDate: $surgeryDate, complications: $complications, noteComplications: $noteComplications}';
+  }
 }

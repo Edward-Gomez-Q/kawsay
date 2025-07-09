@@ -36,4 +36,8 @@ class MedicalCriticalInfo {
       notes: map['notes'],
     );
   }
+  @override
+  String toString() {
+    return 'MedicalCriticalInfo{id: $id, patientId: $patientId, bloodType: $bloodType, pregnant: $pregnant, hasImplants: $hasImplants, notes: $notes}';
+  }
 }
