@@ -65,7 +65,7 @@ class HomeScreenPatient extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Última actualización: ${state.medicalHistoryLastUpdated != null ? state.medicalHistoryLastUpdated!.toLocal().toString().split(' ')[0] : 'N/A'}',
+                    'Última actualización:',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(
                         context,
@@ -73,12 +73,12 @@ class HomeScreenPatient extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  _buildProgressBar(context, state.percentageCompleted / 100),
+                  _buildProgressBar(context, 5 / 10),
                   const SizedBox(height: 12),
                   _buildSummaryItem(
                     context,
                     '🩺',
-                    'Historial Médico: ${state.percentageCompleted}% completo',
+                    'Historial Médico: 5% completo',
                   ),
                 ],
               ),

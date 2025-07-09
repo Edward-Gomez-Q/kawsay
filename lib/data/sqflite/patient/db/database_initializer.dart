@@ -2,11 +2,7 @@ import 'package:sqflite/sqflite.dart';
 
 class DatabaseInitializer {
   static Future<void> createDatabase(Database db, int version) async {
-    // Crear tablas
     await _createTables(db);
-
-    // Insertar datos por defecto
-    await _insertDefaultData(db);
   }
 
   static Future<void> _createTables(Database db) async {
@@ -148,31 +144,5 @@ class DatabaseInitializer {
         REFERENCES patient (id)
       )
     ''');
-  }
-
-  static Future<void> _insertDefaultData(Database db) async {
-    // Crear paciente por defecto
-    await db.insert('patient', {'id': 1, 'percentage_completed': 0});
-
-    // Insertar datos por defecto de lifestyle
-    await db.insert('lifestyle', {
-      'patient_id': 1,
-      'smokes': 0,
-      'drinks_alcohol': 0,
-      'drinks_alcohol_frequency_per_mounth': 0,
-      'exercises': 0,
-      'exercises_frequency_per_week': 0,
-      'sleep_hours': 8,
-      'diet_type': 'Normal',
-    });
-
-    // Insertar datos por defecto de medical_critical_info
-    await db.insert('medical_critical_info', {
-      'patient_id': 1,
-      'blood_type': 'O+',
-      'pregnant': 0,
-      'has_implants': 0,
-      'notes': '',
-    });
   }
 }

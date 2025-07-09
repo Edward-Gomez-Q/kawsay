@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:project_3_kawsay/model/common/person_model.dart';
 import 'package:project_3_kawsay/model/doctor/doctor_model.dart';
+import 'package:project_3_kawsay/model/patient/patient.dart';
 
 class LoginState {
   final TextEditingController emailController;
@@ -14,6 +15,7 @@ class LoginState {
   final int? userId;
   final PersonModel? person;
   final DoctorModel? doctor;
+  final Patient? patient;
   LoginState({
     required this.emailController,
     required this.passwordController,
@@ -26,6 +28,7 @@ class LoginState {
     this.userId,
     this.person,
     this.doctor,
+    this.patient,
   });
   LoginState.empty()
     : emailController = TextEditingController(),
@@ -38,7 +41,8 @@ class LoginState {
       role = null,
       userId = null,
       person = null,
-      doctor = null;
+      doctor = null,
+      patient = null;
 
   LoginState copyWith({
     TextEditingController? emailController,
@@ -52,6 +56,7 @@ class LoginState {
     int? userId,
     PersonModel? person,
     DoctorModel? doctor,
+    Patient? patient,
   }) {
     return LoginState(
       emailController: emailController ?? this.emailController,
@@ -65,11 +70,16 @@ class LoginState {
       obscurePassword: obscurePassword ?? this.obscurePassword,
       person: person ?? this.person,
       doctor: doctor ?? this.doctor,
+      patient: patient ?? this.patient,
     );
   }
 
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+  }
+
+  String toString2() {
+    return 'LoginState(email: ${emailController.text}, password: ${passwordController.text}, isLoading: $isLoading, isError: $isError, error: $error, role: $role, userId: $userId, person: $person, doctor: $doctor, patient: $patient)';
   }
 }

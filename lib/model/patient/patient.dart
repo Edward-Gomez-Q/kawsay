@@ -1,32 +1,20 @@
 class Patient {
   final int id;
-  final int percentageCompleted;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-
-  Patient({
-    required this.id,
-    this.percentageCompleted = 0,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) : createdAt = createdAt ?? DateTime.now(),
-       updatedAt = updatedAt ?? DateTime.now();
+  final int personId;
+  const Patient({required this.id, this.personId = 0});
 
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'percentage_completed': percentageCompleted,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-    };
+    return {'person_id': personId};
   }
 
   factory Patient.fromMap(Map<String, dynamic> map) {
     return Patient(
       id: map['id'] as int,
-      percentageCompleted: map['percentage_completed'] as int,
-      createdAt: DateTime.parse(map['created_at'] as String),
-      updatedAt: DateTime.parse(map['updated_at'] as String),
+      personId: map['person_id'] as int? ?? 0,
     );
+  }
+  @override
+  String toString() {
+    return 'Patient(id: $id, personId: $personId)';
   }
 }

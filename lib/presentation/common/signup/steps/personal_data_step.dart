@@ -136,11 +136,11 @@ class PersonalDataStep extends ConsumerWidget {
                         CustomFormFields.buildTextField(
                           context: context,
                           controller: personForm.neighborhoodController,
-                          label: 'Barrio',
+                          label: 'Zona',
                           icon: Icons.home,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Por favor ingresa tu barrio';
+                              return 'Por favor ingresa tu Zona';
                             }
                             return null;
                           },

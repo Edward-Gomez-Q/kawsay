@@ -22,7 +22,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'medical_records.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 3,
       onCreate: DatabaseInitializer.createDatabase,
     );
   }
@@ -30,5 +30,35 @@ class DatabaseHelper {
   Future<void> close() async {
     final db = await database;
     db.close();
+  }
+
+  Future<void> syncPatientIfNeeded(int patientId) async {
+    final db = await database;
+    final result = await db.query(
+      'patient',
+      where: 'id = ?',
+      whereArgs: [patientId],
+    );
+
+    if (result.isEmpty) {
+      await db.insert('patient', {'id': patientId, 'percentage_completed': 0});
+      await db.insert('lifestyle', {
+        'patient_id': patientId,
+        'smokes': 0,
+        'drinks_alcohol': 0,
+        'drinks_alcohol_frequency_per_mounth': 0,
+        'exercises': 0,
+        'exercises_frequency_per_week': 0,
+        'sleep_hours': 8,
+        'diet_type': 'Normal',
+      });
+      await db.insert('medical_critical_info', {
+        'patient_id': patientId,
+        'blood_type': 'O+',
+        'pregnant': 0,
+        'has_implants': 0,
+        'notes': '',
+      });
+    }
   }
 }

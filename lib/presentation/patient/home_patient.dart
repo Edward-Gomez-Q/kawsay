@@ -4,6 +4,7 @@ import 'package:project_3_kawsay/application/common/auth_notifier.dart';
 import 'package:project_3_kawsay/application/common/navigation_service.dart';
 import 'package:project_3_kawsay/application/core/theme_notifier.dart';
 import 'package:project_3_kawsay/application/patient/patient_screens_notifier.dart';
+import 'package:project_3_kawsay/data/sqflite/patient/db/database_helper.dart';
 import 'package:project_3_kawsay/model/common/person_model.dart';
 import 'package:project_3_kawsay/presentation/patient/medical_history/chronic_condition_patient.dart';
 import 'package:project_3_kawsay/presentation/patient/medical_history/emergency_contact_patient.dart';
@@ -21,17 +22,43 @@ import 'package:project_3_kawsay/presentation/patient/screens/profile_patient.da
 import 'package:project_3_kawsay/presentation/patient/screens/share_data_patient.dart';
 import 'package:project_3_kawsay/state/patient/patient_screens_state.dart';
 
-class HomePatient extends ConsumerWidget {
+class HomePatient extends ConsumerStatefulWidget {
   const HomePatient({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomePatient> createState() => _HomePatientState();
+}
+
+class _HomePatientState extends ConsumerState<HomePatient> {
+  late final int patientId;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final id = ref.read(
+        authProvider.select((state) => state.patientId?.id ?? 0),
+      );
+      if (id != 0) {
+        patientId = id;
+        await DatabaseHelper().syncPatientIfNeeded(patientId);
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final navigation = ref.read(navigationServiceProvider);
     final authMethods = ref.read(authProvider.notifier);
     final themeNotifier = ref.read(themeProvider.notifier);
     final PersonModel? personModel = ref.watch(
       authProvider.select((state) => state.person),
     );
+    final int patientId = ref.watch(
+      authProvider.select((state) => state.patientId?.id ?? 0),
+    );
+
     final patientScreensState = ref.watch(patientScreensProvider);
 
     return Scaffold(
@@ -46,7 +73,7 @@ class HomePatient extends ConsumerWidget {
         margin: const EdgeInsets.all(8),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: _buildCurrentStep(patientScreensState),
+          child: _buildCurrentStep(patientScreensState, patientId),
         ),
       ),
       bottomNavigationBar: Container(
@@ -152,7 +179,7 @@ class HomePatient extends ConsumerWidget {
   }
 
   // Widget para el contenido de la pantalla
-  Widget _buildCurrentStep(PatientScreensState state) {
+  Widget _buildCurrentStep(PatientScreensState state, int patientId) {
     switch (state.currentStep) {
       case 0:
         return const HomeScreenPatient();
@@ -163,27 +190,27 @@ class HomePatient extends ConsumerWidget {
       case 3:
         return const ProfilePatient();
       case 11:
-        return const MedicalCriticalInfoPatient(patientId: 1);
+        return MedicalCriticalInfoPatient(patientId: patientId);
       case 12:
-        return const MedicalAllergyPatient(patientId: 1);
+        return MedicalAllergyPatient(patientId: patientId);
       case 13:
-        return const ChronicConditionPatient(patientId: 1);
+        return ChronicConditionPatient(patientId: patientId);
       case 14:
-        return const SurgicalHistoryPatient(patientId: 1);
+        return SurgicalHistoryPatient(patientId: patientId);
       case 15:
-        return const HospitalizationPatient(patientId: 1);
+        return HospitalizationPatient(patientId: patientId);
       case 16:
-        return const VaccinationPatient(patientId: 1);
+        return VaccinationPatient(patientId: patientId);
       case 17:
-        return const FamilyHistoryPatient(patientId: 1);
+        return FamilyHistoryPatient(patientId: patientId);
       case 18:
-        return const LifestylePatient(patientId: 1);
+        return LifestylePatient(patientId: patientId);
       case 19:
-        return const InsurancePatient(patientId: 1);
+        return InsurancePatient(patientId: patientId);
       case 20:
-        return const EmergencyContactPatient(patientId: 1);
+        return EmergencyContactPatient(patientId: patientId);
       default:
-        return const HomeScreenPatient();
+        return HomeScreenPatient();
     }
   }
 

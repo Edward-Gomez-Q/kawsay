@@ -11,11 +11,7 @@ class PatientScreensNotifier extends StateNotifier<PatientScreensState> {
   Future<void> _loadInitData() async {
     final patient = await _repository.getPatientById(1);
     if (patient != null) {
-      state = state.copyWith(
-        percentageCompleted: patient.percentageCompleted,
-        medicalHistoryLastUpdated: patient.updatedAt,
-        isLoading: false,
-      );
+      state = state.copyWith(isLoading: false);
     } else {
       state = state.copyWith(isLoading: false);
     }

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_3_kawsay/model/common/person_model.dart';
 import 'package:project_3_kawsay/model/doctor/doctor_model.dart';
+import 'package:project_3_kawsay/model/patient/patient.dart';
 import 'package:project_3_kawsay/state/common/auth_state.dart';
 
 class AuthNotifier extends StateNotifier<AuthModel> {
@@ -16,7 +17,13 @@ class AuthNotifier extends StateNotifier<AuthModel> {
         ),
       );
 
-  void login(int userId, int role, PersonModel? person, DoctorModel? doctor) {
+  void login(
+    int userId,
+    int role,
+    PersonModel? person,
+    DoctorModel? doctor,
+    Patient? patientId,
+  ) {
     state = state.copyWith(
       isAuthenticated: true,
       isLoading: false,
@@ -26,6 +33,9 @@ class AuthNotifier extends StateNotifier<AuthModel> {
     );
     if (doctor != null) {
       state = state.copyWith(doctor: doctor);
+    }
+    if (patientId != null) {
+      state = state.copyWith(patientId: patientId);
     }
   }
 

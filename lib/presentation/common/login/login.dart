@@ -12,6 +12,7 @@ class Login extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final navigation = ref.read(navigationServiceProvider);
     final loginState = ref.watch(loginProvider);
+    final loginMethods = ref.read(loginProvider.notifier);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -159,8 +160,7 @@ class Login extends ConsumerWidget {
                                           ).colorScheme.primary,
                                         ),
                                         onPressed: () {
-                                          ref
-                                              .read(loginProvider.notifier)
+                                          loginMethods
                                               .togglePasswordVisibility();
                                         },
                                       ),
@@ -183,38 +183,23 @@ class Login extends ConsumerWidget {
                                     onPressed: loginState.isLoading
                                         ? null
                                         : () async {
-                                            await ref
-                                                .watch(loginProvider.notifier)
-                                                .login();
-                                            final updatedLoginState = ref.watch(
+                                            await loginMethods.login();
+                                            final authState = ref.read(
                                               loginProvider,
                                             );
-                                            print(
-                                              'Login State: ${updatedLoginState.isError}, UserId: ${updatedLoginState.userId}, Role: ${updatedLoginState.role}',
-                                            );
-
-                                            if (!updatedLoginState.isError) {
+                                            if (!authState.isError) {
                                               ref
-                                                  .watch(authProvider.notifier)
+                                                  .read(authProvider.notifier)
                                                   .login(
-                                                    updatedLoginState.userId!,
-                                                    updatedLoginState.role!,
-                                                    updatedLoginState.person,
-                                                    updatedLoginState.doctor,
+                                                    authState.userId!,
+                                                    authState.role!,
+                                                    authState.person,
+                                                    authState.doctor,
+                                                    authState.patient,
                                                   );
-
-                                              print(
-                                                'AuthProvider - UserId: ${ref.read(authProvider).userId}, Role: ${ref.read(authProvider).role}',
-                                              );
-                                              if (loginState.role == 1) {
-                                                print(
-                                                  'Navegando a Home Doctor',
-                                                );
+                                              if (authState.role == 1) {
                                                 navigation.goToHomeDoctor();
                                               } else {
-                                                print(
-                                                  'Navegando a Home Patient',
-                                                );
                                                 navigation.goToHomePatient();
                                               }
                                             }
@@ -272,9 +257,7 @@ class Login extends ConsumerWidget {
                                           ),
                                   ),
                                 ),
-
-                                // Mensaje de error con mejor presentación
-                                if (loginState.error != null)
+                                if (loginState.isError)
                                   Padding(
                                     padding: const EdgeInsets.only(top: 16),
                                     child: Container(

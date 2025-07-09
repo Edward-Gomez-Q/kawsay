@@ -3,9 +3,11 @@ import 'package:project_3_kawsay/data/supabase/common/auth_user_repository_sp.da
 import 'package:project_3_kawsay/data/supabase/common/doctor_repository_sp.dart';
 import 'package:project_3_kawsay/data/supabase/common/person_repository_sp.dart';
 import 'package:project_3_kawsay/data/supabase/common/role_user_reposiotry_sp.dart';
+import 'package:project_3_kawsay/data/supabase/patient/patient_repository_sp.dart';
 import 'package:project_3_kawsay/model/common/person_model.dart';
 import 'package:project_3_kawsay/model/common/user_model.dart';
 import 'package:project_3_kawsay/model/doctor/doctor_model.dart';
+import 'package:project_3_kawsay/model/patient/patient.dart';
 import 'package:project_3_kawsay/state/common/sign_up_personal_state.dart';
 import 'package:project_3_kawsay/state/common/user_sign_up_data_state.dart';
 import 'package:project_3_kawsay/state/common/sign_up_state.dart';
@@ -15,6 +17,7 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
   final AuthUserRepositorySp _authUserRepository = AuthUserRepositorySp();
   final DoctorRepositorySp _doctorRepository = DoctorRepositorySp();
   final RoleUserReposiotrySp _roleUserRepository = RoleUserReposiotrySp();
+  final PatientRepositorySp _patientRepository = PatientRepositorySp();
   SignUpNotifier() : super(SignUpState());
   void setUserType(UserType userType) {
     state = state.copyWith(
@@ -170,13 +173,12 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
     } else {
       if (data.userType == UserType.doctor && data.medicalData != null) {
         await _doctorRepository.createDoctor(data.medicalData!, person.id);
-
         await _roleUserRepository.createRoleUser(1, user.id);
       } else {
+        final newPatient = Patient(id: 0, personId: person.id);
+        await _patientRepository.createPatient(newPatient);
         await _roleUserRepository.createRoleUser(2, user.id);
       }
-
-      // Actualizar el estado con el usuario creado
       state = state.copyWith(
         isLoading: false,
         error: null,
@@ -189,10 +191,7 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
   }
 
   Future<PersonModel> createPerson(PersonModel person) async {
-    /*// Validaciones de negocio
     _validatePersonData(person);
-
-    // Verificar si ya existe una persona con el mismo documento
     final existingPerson = await _personRepository.getPersonByDocumentId(
       person.documentId,
     );
@@ -200,17 +199,11 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
       throw Exception(
         'Ya existe una persona con el documento: ${person.documentId}',
       );
-    }*/
-
-    /*// Validar edad mínima (ejemplo: 18 años)
-    if (!_isAdult(person.birthDate)) {
-      throw Exception('La persona debe ser mayor de edad');
-    }*/
-
+    }
     return await _personRepository.createPerson(person);
   }
 
-  /*void _validatePersonData(PersonModel person) {
+  void _validatePersonData(PersonModel person) {
     if (person.names.trim().isEmpty) {
       throw Exception('El nombre es requerido');
     }
@@ -235,37 +228,14 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
     if (person.address.trim().isEmpty) {
       throw Exception('La dirección es requerida');
     }
-
-    // Validar formato de teléfono (ejemplo básico)
     if (!_isValidPhoneNumber(person.personalPhoneNumber)) {
       throw Exception('Formato de teléfono inválido');
     }
   }
-*/
-  /*bool _isAdult(DateTime birthDate) {
-    final today = DateTime.now();
-    final age = today.year - birthDate.year;
-    if (today.month < birthDate.month ||
-        (today.month == birthDate.month && today.day < birthDate.day)) {
-      return age - 1 >= 18;
-    }
-    return age >= 18;
-  }*/
 
-  /*int _calculateAge(DateTime birthDate) {
-    final today = DateTime.now();
-    int age = today.year - birthDate.year;
-    if (today.month < birthDate.month ||
-        (today.month == birthDate.month && today.day < birthDate.day)) {
-      age--;
-    }
-    return age;
-  }*/
-
-  /* bool _isValidPhoneNumber(String phoneNumber) {
-    // Implementa tu lógica de validación de teléfono aquí
+  bool _isValidPhoneNumber(String phoneNumber) {
     return phoneNumber.length >= 7 && phoneNumber.length <= 15;
-  }*/
+  }
 
   void resetRegistration() {
     state = SignUpState();

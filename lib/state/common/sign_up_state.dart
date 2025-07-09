@@ -22,7 +22,7 @@ class SignUpState {
       currentStep: currentStep ?? this.currentStep,
       registrationData: registrationData ?? this.registrationData,
       isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
+      error: error,
     );
   }
 }

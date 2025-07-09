@@ -4,6 +4,7 @@ import 'package:project_3_kawsay/data/supabase/common/auth_user_repository_sp.da
 import 'package:project_3_kawsay/data/supabase/common/doctor_repository_sp.dart';
 import 'package:project_3_kawsay/data/supabase/common/person_repository_sp.dart';
 import 'package:project_3_kawsay/data/supabase/common/role_user_reposiotry_sp.dart';
+import 'package:project_3_kawsay/data/supabase/patient/patient_repository_sp.dart';
 import 'package:project_3_kawsay/state/common/login_state.dart';
 
 class LoginNotifier extends StateNotifier<LoginState> {
@@ -11,6 +12,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
   final RoleUserReposiotrySp _roleUserRepository = RoleUserReposiotrySp();
   final DoctorRepositorySp _doctorRepository = DoctorRepositorySp();
   final PersonRepositorySp _personRepository = PersonRepositorySp();
+  final PatientRepositorySp _patientRepository = PatientRepositorySp();
   LoginNotifier() : super(LoginState.empty());
 
   void setEmail(String email) {
@@ -31,12 +33,12 @@ class LoginNotifier extends StateNotifier<LoginState> {
     if (!state.formKey.currentState!.validate()) {
       return;
     }
+    final email = state.emailController.text.trim();
+    final password = state.passwordController.text.trim();
+    state = LoginState.empty();
     state = state.copyWith(isLoading: true, error: "", isError: false);
     try {
-      final user = await _authUserRepository.login(
-        state.emailController.text,
-        state.passwordController.text,
-      );
+      final user = await _authUserRepository.login(email, password);
       if (user != null) {
         final role = await _roleUserRepository.getRoleByUserId(user.id);
         if (role != null) {
@@ -48,13 +50,17 @@ class LoginNotifier extends StateNotifier<LoginState> {
             );
             return;
           }
-          print("Inicio de sesión exitoso: ${user.email}");
-          state = state.copyWith(doctor: null);
+          state = state.copyWith(doctor: null, patient: null);
           if (role == 1) {
             final doctor = await _doctorRepository.getDoctorByPersonId(
               person.id,
             );
             state = state.copyWith(doctor: doctor);
+          } else {
+            final patient = await _patientRepository.getPatientByPersonId(
+              person.id,
+            );
+            state = state.copyWith(patient: patient);
           }
           state = state.copyWith(
             role: role,
@@ -81,6 +87,11 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
   void togglePasswordVisibility() {
     state = state.copyWith(obscurePassword: !state.obscurePassword);
+  }
+
+  //To string de todos los atributos
+  String toString2() {
+    return 'LoginState(email: ${state.emailController.text}, password: ${state.passwordController.text}, isLoading: ${state.isLoading}, isError: ${state.isError}, error: ${state.error}, role: ${state.role}, userId: ${state.userId}, person: ${state.person}, doctor: ${state.doctor}, patient: ${state.patient})';
   }
 }
 
