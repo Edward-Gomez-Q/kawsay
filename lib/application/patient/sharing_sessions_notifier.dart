@@ -30,8 +30,6 @@ class SharingSessionsNotifier extends StateNotifier<SharingSessionsState> {
 
     try {
       await _repository.deleteSharingSession(sessionId);
-
-      // Remover la sesión de la lista local
       final updatedSessions = state.sessions
           .where((session) => session.id.toString() != sessionId)
           .toList();

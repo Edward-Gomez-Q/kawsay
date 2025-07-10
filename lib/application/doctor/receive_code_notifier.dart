@@ -75,7 +75,7 @@ class ReceiveCodeNotifier extends StateNotifier<ReceiveCodeState> {
         );
         return;
       }
-      final now = DateTime.now();
+      final now = DateTime.now().toUtc();
       if (now.isAfter(sharingSession.expiresAt)) {
         state = state.copyWith(
           status: ReceiveCodeStatus.expired,
@@ -87,7 +87,6 @@ class ReceiveCodeNotifier extends StateNotifier<ReceiveCodeState> {
       final medicalHistory = EncryptionService.decryptModel(
         sharingSession.sharedData,
       );
-      print('Medical History: $medicalHistory');
 
       final appointmentModel = AppointmentModel(
         id: 0,

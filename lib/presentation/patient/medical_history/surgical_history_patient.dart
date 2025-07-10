@@ -244,24 +244,26 @@ class _SurgicalHistoryPatientState
             child: state.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : state.surgicalHistoryList.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.medical_services,
-                          size: 64,
-                          color: Theme.of(context).colorScheme.outline,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No hay historial quirúrgico registrado',
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.outline,
-                              ),
-                        ),
-                      ],
+                ? SingleChildScrollView(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.medical_services,
+                            size: 64,
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No hay historial quirúrgico registrado',
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                          ),
+                        ],
+                      ),
                     ),
                   )
                 : ListView.builder(

@@ -136,6 +136,7 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
   }
 
   Future<void> completeRegistration() async {
+    print('Completando registro en el paso ${state.currentStep}');
     if (state.registrationData == null) {
       throw Exception('No hay datos de registro disponibles');
     }
@@ -143,6 +144,7 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
+      print('Datos de registro: ${state.registrationData}');
       await _createUser(state.registrationData!);
       state = state.copyWith(isLoading: false, error: null);
     } catch (e) {
@@ -151,12 +153,7 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
   }
 
   Future<void> _createUser(UserSignUpData data) async {
-    // Validaciones de negocio
-    if (data.userCredentials.email.isEmpty ||
-        data.userCredentials.password.isEmpty) {
-      throw Exception('Email y contraseña son requeridos');
-    }
-
+    print('Creando usuario con datos: ${data.toString()}');
     // Crear persona asociada al usuario
     final person = await createPerson(data.personalData);
 
@@ -165,6 +162,7 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
       data.userCredentials,
       person.id,
     );
+    print('Usuario creado: $user');
     if (user == null) {
       state = state.copyWith(
         isLoading: false,

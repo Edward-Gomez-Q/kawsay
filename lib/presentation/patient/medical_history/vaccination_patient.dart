@@ -218,44 +218,46 @@ class VaccinationPatient extends ConsumerWidget {
   }
 
   Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Theme.of(
-                context,
-              ).colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(100),
+    return SingleChildScrollView(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: const Icon(
+                Icons.vaccines,
+                size: 80,
+                color: Color(0xFF4CAF50),
+              ),
             ),
-            child: const Icon(
-              Icons.vaccines,
-              size: 80,
-              color: Color(0xFF4CAF50),
+            const SizedBox(height: 24),
+            const Text(
+              '¡Tiempo de vacunarse! 💉',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2E7D32),
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-          const Text(
-            '¡Tiempo de vacunarse! 💉',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF2E7D32),
+            const SizedBox(height: 8),
+            Text(
+              'No hay vacunas registradas aún',
+              style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'No hay vacunas registradas aún',
-            style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Presiona + para agregar la primera vacuna',
-            style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              'Presiona + para agregar la primera vacuna',
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+            ),
+          ],
+        ),
       ),
     );
   }

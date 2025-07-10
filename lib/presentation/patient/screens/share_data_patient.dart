@@ -270,7 +270,7 @@ class ShareDataPatient extends ConsumerWidget {
 
     switch (state.selectedTimeType) {
       case TimeType.minutes:
-        options = [20, 40];
+        options = [4, 20, 40];
         unit = 'minutos';
         break;
       case TimeType.hours:

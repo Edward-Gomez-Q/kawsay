@@ -295,32 +295,8 @@ class InsurancePatient extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
-
-                  // Estado y vigencia
                   Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isActive
-                              ? colorScheme.primaryContainer
-                              : colorScheme.errorContainer,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          isActive ? 'Activo' : 'Vencido',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: isActive
-                                ? colorScheme.onPrimaryContainer
-                                : colorScheme.onErrorContainer,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
                       if (isActive && daysRemaining <= 30)
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -438,15 +414,6 @@ class InsurancePatient extends ConsumerWidget {
               'Fecha de vencimiento',
               _formatDate(insurance.endDate),
               Icons.stop,
-            ),
-            const SizedBox(height: 16),
-            _buildDetailRow(
-              context,
-              theme,
-              colorScheme,
-              'Estado',
-              isActive ? 'Activo' : 'Vencido',
-              isActive ? Icons.check_circle : Icons.cancel,
             ),
             if (isActive && daysRemaining <= 30) ...[
               const SizedBox(height: 16),

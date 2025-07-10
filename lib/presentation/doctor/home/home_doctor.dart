@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_3_kawsay/application/common/auth_notifier.dart';
 import 'package:project_3_kawsay/application/common/navigation_service.dart';
 import 'package:project_3_kawsay/application/core/theme_notifier.dart';
-import 'package:project_3_kawsay/application/doctor/home_doctor_notifier.dart';
 import 'package:project_3_kawsay/state/common/auth_state.dart';
-import 'package:project_3_kawsay/state/doctor/home_doctor_state.dart';
 
 class HomeDoctor extends ConsumerWidget {
   const HomeDoctor({super.key});
@@ -15,9 +13,6 @@ class HomeDoctor extends ConsumerWidget {
     final navigation = ref.read(navigationServiceProvider);
     final authState = ref.watch(authProvider);
     final themeData = Theme.of(context);
-    final doctorId = authState.doctor?.id;
-
-    final homeDoctorState = ref.watch(homeDoctorProvider(doctorId ?? 0));
 
     return Scaffold(
       appBar: AppBar(
@@ -73,8 +68,6 @@ class HomeDoctor extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildWelcomeSection(context, authState),
-              const SizedBox(height: 24),
-              _buildQuickStats(context, homeDoctorState),
               const SizedBox(height: 24),
               Text(
                 'Acciones Principales',
@@ -171,74 +164,6 @@ class HomeDoctor extends ConsumerWidget {
                 ),
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQuickStats(
-    BuildContext context,
-    HomeDoctorState homeDoctorProvider,
-  ) {
-    return Row(
-      children: [
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildStatCard(
-            context,
-            icon: Icons.calendar_today,
-            title: 'Citas',
-            value: homeDoctorProvider.appointmentCount.toString(),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildStatCard(
-            context,
-            icon: Icons.medical_services,
-            title: 'Diagnósticos',
-            value: homeDoctorProvider.diagnosticsCount.toString(),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatCard(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String value,
-  }) {
-    final themeData = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: themeData.colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: themeData.colorScheme.outline.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 24, color: themeData.colorScheme.primary),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: themeData.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: themeData.colorScheme.onSurface,
-            ),
-          ),
-          Text(
-            title,
-            style: themeData.textTheme.bodyMedium?.copyWith(
-              color: themeData.colorScheme.onSurface,
-            ),
           ),
         ],
       ),
