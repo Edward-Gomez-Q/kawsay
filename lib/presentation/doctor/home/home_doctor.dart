@@ -17,7 +17,7 @@ class HomeDoctor extends ConsumerWidget {
     final themeData = Theme.of(context);
     final doctorId = authState.doctor?.id;
 
-    final homeDoctorState = ref.watch(homeDoctorProvider(doctorId!));
+    final homeDoctorState = ref.watch(homeDoctorProvider(doctorId ?? 0));
 
     return Scaffold(
       appBar: AppBar(
@@ -47,23 +47,22 @@ class HomeDoctor extends ConsumerWidget {
             },
             itemBuilder: (context) => [
               const PopupMenuItem(
-                value: 'logout',
-                child: Row(
-                  children: [
-                    Icon(Icons.logout),
-                    SizedBox(width: 8),
-                    Text('Cerrar Sesión'),
-                  ],
-                ),
-              ),
-              //Perfil doctor
-              const PopupMenuItem(
                 value: 'profile',
                 child: Row(
                   children: [
                     Icon(Icons.person),
                     SizedBox(width: 8),
                     Text('Perfil'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout),
+                    SizedBox(width: 8),
+                    Text('Cerrar Sesión'),
                   ],
                 ),
               ),

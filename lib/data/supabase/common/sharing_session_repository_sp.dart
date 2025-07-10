@@ -61,4 +61,14 @@ class SharingSessionRepositorySp {
       throw Exception('Error al obtener sesiones de compartición: $e');
     }
   }
+
+  // Eliminar una sesión de compartición por ID
+  Future<void> deleteSharingSession(String sessionId) async {
+    try {
+      await _client.from(_tableName).delete().eq('id', sessionId);
+    } catch (e) {
+      print('Error al eliminar sesión de compartición: $e');
+      throw Exception('Error al eliminar sesión de compartición: $e');
+    }
+  }
 }

@@ -26,6 +26,9 @@ class HomeDoctorNotifier extends StateNotifier<HomeDoctorState> {
   }
 
   Future<void> loadCounts(int doctorId) async {
+    if (doctorId <= 0) {
+      return;
+    }
     try {
       final appointments = await _appointmentRepository.getAppointmentsByDoctor(
         doctorId,

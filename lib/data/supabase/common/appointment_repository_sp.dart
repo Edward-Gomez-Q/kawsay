@@ -1,5 +1,6 @@
 import 'package:project_3_kawsay/model/common/appointment_model.dart';
 import 'package:project_3_kawsay/model/doctor/appointment_with_patient_model.dart';
+import 'package:project_3_kawsay/model/patient/appointment_with_doctor_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AppointmentRepositorySp {
@@ -78,6 +79,46 @@ class AppointmentRepositorySp {
     } catch (e) {
       print('Error al obtener cantidad de citas del doctor: $e');
       return 0;
+    }
+  }
+
+  Future<List<AppointmentWithDoctorModel>> getAppointmentsByPatient(
+    int patientId,
+  ) async {
+    try {
+      final response = await _client
+          .from(_tableName)
+          .select('''
+          id,
+          sharing_session_id,
+          appointment_date,
+          appointment_status,
+          consultation_type,
+          patient_id,
+          doctor_id,
+          doctor:doctor_id (
+            person:person_id (
+              names,
+              first_last_name,
+              second_last_name
+            ),
+            specialization,
+            medical_college,
+            years_experience
+          ),
+          sharing_session:sharing_session_id (
+            share_code
+          )
+        ''')
+          .eq('patient_id', patientId)
+          .order('appointment_date', ascending: false);
+
+      return (response as List)
+          .map((json) => AppointmentWithDoctorModel.fromJson(json))
+          .toList();
+    } catch (e) {
+      print('Error al obtener citas del paciente: $e');
+      return [];
     }
   }
 }

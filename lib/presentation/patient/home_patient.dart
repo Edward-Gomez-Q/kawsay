@@ -16,9 +16,11 @@ import 'package:project_3_kawsay/presentation/patient/medical_history/medical_al
 import 'package:project_3_kawsay/presentation/patient/medical_history/medical_critical_info_patient.dart';
 import 'package:project_3_kawsay/presentation/patient/medical_history/surgical_history_patient.dart';
 import 'package:project_3_kawsay/presentation/patient/medical_history/vaccination_patient.dart';
+import 'package:project_3_kawsay/presentation/patient/screens/diagnostics_patient_screen.dart';
 import 'package:project_3_kawsay/presentation/patient/screens/home_screen_patient.dart';
 import 'package:project_3_kawsay/presentation/patient/screens/medical_history_patient.dart';
 import 'package:project_3_kawsay/presentation/patient/screens/profile_patient.dart';
+import 'package:project_3_kawsay/presentation/patient/screens/share_codes_patient_screen.dart';
 import 'package:project_3_kawsay/presentation/patient/screens/share_data_patient.dart';
 import 'package:project_3_kawsay/state/patient/patient_screens_state.dart';
 
@@ -155,7 +157,7 @@ class _HomePatientState extends ConsumerState<HomePatient> {
           const Text('☀️'),
           const SizedBox(width: 8),
           Text(
-            'Bienvenido, ${personModel?.firstLastName ?? 'Paciente'}',
+            'Bienvenido, ${personModel?.names ?? 'Paciente'}',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w600,
@@ -216,6 +218,10 @@ class _HomePatientState extends ConsumerState<HomePatient> {
         return InsurancePatient(patientId: patientId);
       case 20:
         return EmergencyContactPatient(patientId: patientId);
+      case 21:
+        return const ShareCodesPatientScreen();
+      case 22:
+        return const DiagnosticsPatientScreen();
       default:
         return HomeScreenPatient();
     }
