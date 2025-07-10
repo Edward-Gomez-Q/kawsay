@@ -21,10 +21,6 @@ class HomeDoctor extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Dr. ${authState.person?.firstLastName ?? 'Doctor'}',
-          style: themeData.textTheme.titleLarge,
-        ),
         actions: [
           IconButton(
             icon: Icon(
